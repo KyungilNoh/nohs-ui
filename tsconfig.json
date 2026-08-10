@@ -1,0 +1,28 @@
+// design-system/tsconfig.json
+
+{
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "ESNext",
+    "jsx": "react-jsx",
+    "declaration": true,
+    "declarationDir": "dist",
+    "outDir": "dist",
+    "moduleResolution": "Bundler",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "types": ["node"],
+
+    "baseUrl": "./src",
+    "paths": {
+      "@ds": ["./index.ts"],
+      "@ds/*": ["./*"],
+      "@dds": ["./demo/blocks/index.ts"],
+      "@dds/*": ["./demo/blocks/*"]
+    },
+
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["src", "vite.config.ts"]
+}

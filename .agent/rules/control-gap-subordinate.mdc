@@ -1,0 +1,41 @@
+---
+description: 트리거 스위치 아래 귀속 컴포넌트(Input/Select) 배치 시 갭·라벨 규칙
+globs: lds/**/*.tsx
+alwaysApply: false
+---
+
+# 귀속 컴포넌트 갭 체계
+
+트리거 스위치(Switch 등) 아래에 **귀속된 컴포넌트**(Input, Select 등)를 붙일 때:
+
+## 갭
+
+- `controlCompGap`(mt-1.5)으로 트리거와 귀속 컴포넌트 사이 간격 적용
+- 토큰: `control.ts`의 `controlCompGap` 사용
+
+## labelHidden 우선
+
+- 귀속된 Input/Select는 **우선적으로 `labelHidden`** 사용
+- `labelHidden`이 없으면 라벨 행 + `controlLabelToControlGapY` 때문에 상단 여백이 생겨 트리거와 시각적으로 벌어져 보임
+
+## 예시
+
+```tsx
+<div className='flex flex-col'>
+  <Switch label='Left icon' checked={leftIconEnabled} onChange={...} />
+  {leftIconEnabled ? (
+    <div className={controlCompGap}>
+      <Select
+        label='Left icon name'
+        labelHidden
+        value={leftIconName}
+        onChange={...}
+        options={ICON_OPTIONS}
+        fullWidth
+      />
+    </div>
+  ) : null}
+</div>
+```
+
+SwitchDemo의 Description 패턴, ButtonDemo의 Left/Right icon Select 패턴 참고.

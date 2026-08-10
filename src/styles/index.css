@@ -1,0 +1,89 @@
+/**
+ * design-system/src/styles/index.css
+ * DS 데모용 진입점 하나. (토큰은 tokens.css 로 분리 — 소비 앱에서 변수만 쓸 때 사용)ㅇd
+ */
+
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    font-family: inherit;
+  }
+  code, pre, kbd, samp {
+    font-family: var(--font-mono);
+  }
+}
+
+@layer utilities {
+  .ds-focus-ring,
+  .ds-focus-visible-ring,
+  .ds-focus-inset-ring {
+    outline: none !important;
+  }
+  .ds-focus-ring:focus {
+    outline: var(--focus-ring-w) solid var(--focus-ring-color) !important;
+    outline-offset: var(--focus-ring-offset-w) !important;
+  }
+  .ds-focus-visible-ring:focus {
+    outline: none !important;
+  }
+  .ds-focus-visible-ring:focus-visible {
+    outline: var(--focus-ring-w) solid var(--focus-ring-color) !important;
+    outline-offset: var(--focus-ring-offset-w) !important;
+  }
+  .ds-focus-inset-ring {
+    position: relative;
+  }
+  .ds-focus-inset-ring::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 var(--focus-ring-w) var(--focus-ring-color);
+    opacity: 0;
+  }
+  .ds-focus-inset-ring:has(*:focus-visible)::after {
+    opacity: 1;
+  }
+  .ds-focus-inset-ring *:focus {
+    outline: none !important;
+  }
+  .ring-primary { --focus-ring-color: var(--focus-ring-color-primary); }
+  .ring-error { --focus-ring-color: var(--focus-ring-color-error); }
+  .ring-success { --focus-ring-color: var(--focus-ring-color-success); }
+  .ring-muted { --focus-ring-color: var(--focus-ring-color-muted); }
+  .text-onsurface { color: rgb(var(--color-onsurface)); }
+  .text-subtle { color: rgb(var(--color-subtle)); }
+  .text-helper { color: rgb(var(--color-helper)); }
+  .text-muted { color: rgb(var(--color-muted)); }
+  .text-disabled { color: rgb(var(--color-disabled)); }
+  .text-error { color: rgb(var(--color-error)); }
+  .text-onprimary { color: rgb(var(--color-onprimary)); }
+  .text-success { color: rgb(var(--color-success)); }
+  .bg-surface { background-color: rgb(var(--color-surface)); }
+  .bg-pure-surface { background-color: rgb(var(--color-pure-surface)); }
+  .bg-surface-alt { background-color: rgb(var(--color-surface-alt)); }
+  .bg-surface-strong { background-color: rgb(var(--color-surface-strong)); }
+  .bg-surface-inverted { background-color: rgb(var(--color-surface-inverted)); }
+  .bg-primary { background-color: rgb(var(--color-primary)); }
+  .bg-error { background-color: rgb(var(--color-error)); }
+  .border-outline { border-color: rgb(var(--color-outline)); }
+  .border-primary { border-color: rgb(var(--color-primary)); }
+  .border-error { border-color: rgb(var(--color-error)); }
+  .border-success { border-color: rgb(var(--color-success)); }
+  .icon-default { color: rgb(var(--color-icon-default)); }
+  .icon-muted { color: rgb(var(--color-icon-muted)); }
+  .icon-disabled { color: rgb(var(--color-icon-disabled)); }
+  .icon-onprimary { color: rgb(var(--color-icon-onprimary)); }
+  .icon-error { color: rgb(var(--color-icon-error)); }
+}

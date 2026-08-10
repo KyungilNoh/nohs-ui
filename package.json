@@ -1,0 +1,38 @@
+{
+  "name": "@your-org/design-system",
+  "version": "1.1.0",
+  "main": "dist/src/index.js",
+  "module": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "exports": {
+    ".": "./dist/src/index.js",
+    "./src/styles/index.css": "./src/styles/index.css"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepare": "tsc",
+    "dev": "npx vite",
+    "preview": "npx vite preview"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@headlessui/react": "^2.2.9",
+    "@mui/icons-material": "^7.3.6",
+    "@mui/material": "^7.3.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.3",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
+  }
+}

@@ -1,0 +1,23 @@
+/* ==========================================================================
+   Demo Shell (layout only)
+   ========================================================================== */
+
+.demoLayout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Left Navigation shell */
+.demoNav {
+  width: 240px;
+  flex-shrink: 0;
+}
+
+/* Main content area */
+.demoMain {
+  flex: 1;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+/* ThemeToggle 위치는 design-system/src/styles/index.css 에서 통일 */

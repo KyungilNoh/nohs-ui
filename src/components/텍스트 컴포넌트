@@ -1,0 +1,4 @@
+Title: 페이지/섹션의 “헤딩” → 기본적으로 굵고, 트래킹/라인하이트/마진 감이 다름
+Subtitle: 헤딩 아래 보조 헤딩 → Title보다 덜 강하고, 주로 같은 계열이지만 톤이 다름
+Paragraph: 본문 텍스트 → 읽기 편한 line-height, 색, weight 기본값이 다름
+Eyebrow: 카테고리/메타 라벨(“Components”, “Beta”) → 대문자/트래킹/색/크기 규칙이 다름

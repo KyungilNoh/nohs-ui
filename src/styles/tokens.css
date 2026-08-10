@@ -1,0 +1,157 @@
+/* design-system/src/styles/tokens.css — 디자인 토큰(변수만). [data-theme] 로 라이트/다크 전환 */
+
+:root {
+  /* ========== Palette: Brand ========== */
+  --brand-50: 242 247 247;
+  --brand-100: 228 241 241;
+  --brand-200: 200 228 228;
+  --brand-300: 151 215 216;
+  --brand-400: 97 208 209;
+  --brand-500: 0 81 82;
+  --brand-600: 0 71 72;
+  --brand-700: 0 60 61;
+  --brand-800: 0 45 46;
+  --brand-900: 0 30 31;
+
+  /* ========== Palette: Status ========== */
+  --red-500: 218 30 40;
+  --green-500: 36 161 72;
+
+  /* ========== Palette: Neutral ========== */
+  --neutral-0: 0 0 0;
+  --neutral-2: 6 7 9;
+  --neutral-4: 11 12 14;
+  --neutral-6: 16 17 19;
+  --neutral-8: 21 22 24;
+  --neutral-10: 26 27 29;
+  --neutral-12: 31 32 34;
+  --neutral-14: 36 37 38;
+  --neutral-16: 41 42 44;
+  --neutral-18: 46 47 49;
+  --neutral-20: 51 52 54;
+  --neutral-22: 56 57 59;
+  --neutral-24: 61 62 64;
+  --neutral-26: 66 67 69;
+  --neutral-28: 71 72 74;
+  --neutral-30: 76 77 79;
+  --neutral-32: 81 82 84;
+  --neutral-34: 86 87 89;
+  --neutral-36: 91 92 94;
+  --neutral-38: 96 97 99;
+  --neutral-40: 101 102 104;
+  --neutral-42: 106 107 109;
+  --neutral-44: 111 112 114;
+  --neutral-46: 116 117 119;
+  --neutral-48: 121 122 124;
+  --neutral-50: 126 127 129;
+  --neutral-52: 131 132 134;
+  --neutral-54: 136 137 139;
+  --neutral-56: 141 142 144;
+  --neutral-58: 146 147 149;
+  --neutral-60: 156 157 159;
+  --neutral-62: 161 162 164;
+  --neutral-64: 166 167 169;
+  --neutral-66: 171 172 174;
+  --neutral-68: 176 177 179;
+  --neutral-70: 181 182 184;
+  --neutral-72: 186 187 189;
+  --neutral-74: 191 192 194;
+  --neutral-76: 196 197 199;
+  --neutral-78: 201 202 204;
+  --neutral-80: 206 207 209;
+  --neutral-82: 211 212 214;
+  --neutral-84: 216 217 219;
+  --neutral-86: 221 222 224;
+  --neutral-88: 226 227 229;
+  --neutral-90: 231 232 234;
+  --neutral-92: 236 237 239;
+  --neutral-94: 241 242 244;
+  --neutral-96: 246 247 249;
+  --neutral-98: 251 252 254;
+  --neutral-100: 255 255 255;
+
+  /* ========== Typography (OS UI Font 확정) ========== */
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Apple SD Gothic Neo', 'Noto Sans KR', 'Noto Sans JP',
+    'Hiragino Sans', 'Helvetica Neue', Arial, sans-serif;
+
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
+
+  /* ========== Semantic (Light) ========== */
+  --color-primary: var(--brand-500);
+  --color-onprimary: var(--neutral-100);
+
+  --color-surface: var(--neutral-100);
+  --color-surface-alt: var(--neutral-96);
+  --color-surface-strong: var(--neutral-92);
+  --color-surface-inverted: var(--neutral-10);
+
+  /** 테마 전환 시 완전 흰색(라이트) ↔ 완전 검정(다크) 배경용 */
+  --color-pure-surface: var(--neutral-100);
+
+  --color-onsurface: var(--neutral-10);
+  --color-subtle: var(--neutral-30);
+  --color-helper: var(--neutral-40);
+  --color-muted: var(--neutral-60);
+  --color-disabled: var(--neutral-80);
+
+  --color-outline: var(--neutral-86);
+  --color-outline-strong: var(--neutral-70);
+
+  --color-error: var(--red-500);
+  --color-success: var(--green-500);
+
+  /* Icon (Semantic) */
+  --color-icon-default: var(--color-onsurface);
+  --color-icon-muted: var(--color-helper);
+  --color-icon-disabled: var(--color-disabled);
+  --color-icon-onprimary: var(--color-onprimary);
+  --color-icon-error: var(--color-error);
+
+  /* Focus Ring */
+  --focus-ring-w: 2px;
+  --focus-ring-offset-w: 2px;
+  --focus-ring-color: rgb(var(--color-primary));
+  --focus-ring-color-primary: rgb(var(--color-primary));
+  --focus-ring-color-error: rgb(var(--color-error));
+  --focus-ring-color-success: rgb(var(--color-success));
+  --focus-ring-color-muted: rgb(var(--color-outline-strong));
+}
+
+/* ===== Dark Theme ===== */
+[data-theme='dark'] {
+  --color-primary: var(--brand-600);
+  --color-onprimary: var(--neutral-100);
+
+  --color-surface: var(--neutral-10);
+  --color-surface-alt: var(--neutral-14);
+  --color-surface-strong: var(--neutral-18);
+  --color-surface-inverted: var(--neutral-96);
+
+  --color-pure-surface: var(--neutral-0);
+
+  --color-onsurface: var(--neutral-100);
+  --color-subtle: var(--neutral-70);
+  --color-helper: var(--neutral-60);
+  --color-muted: var(--neutral-40);
+  --color-disabled: var(--neutral-20);
+
+  --color-outline: var(--neutral-24);
+  --color-outline-strong: var(--neutral-40);
+
+  --color-error: var(--red-500);
+  --color-success: var(--green-500);
+
+  --color-icon-default: var(--color-onsurface);
+  --color-icon-muted: var(--color-helper);
+  --color-icon-disabled: var(--color-disabled);
+  --color-icon-onprimary: var(--color-onprimary);
+  --color-icon-error: var(--color-error);
+
+  --focus-ring-color: rgb(var(--color-primary));
+  --focus-ring-color-primary: rgb(var(--color-primary));
+  --focus-ring-color-error: rgb(var(--color-error));
+  --focus-ring-color-success: rgb(var(--color-success));
+  --focus-ring-color-muted: rgb(var(--color-outline-strong));
+}

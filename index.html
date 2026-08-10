@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Design System Gallery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 첫 페인트 전 테마 적용 (localStorage 우선, 없으면 OS 테마) -->
+    <script>
+      (function(){
+        var t=typeof localStorage!=='undefined'?localStorage.getItem('ds-demo-theme'):null;
+        if(t!=='dark'&&t!=='light'){
+          t=typeof window!=='undefined'&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+        }
+        document.documentElement.setAttribute('data-theme',t||'light');
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/demo/main.tsx"></script>
+  </body>
+</html>
