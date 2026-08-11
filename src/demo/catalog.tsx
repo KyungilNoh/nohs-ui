@@ -127,13 +127,13 @@ export const ATOMS: Entry[] = [
     title: 'Title',
     description: 'Document heading. Choose h1–h6 with level, then weight and align.',
     href: '/title',
-    preview: <Title level={3}>Title</Title>,
+    preview: <Title level={3}>A heading</Title>,
   },
   {
     title: 'Subtitle',
     description: 'Supporting heading under a Title. Renders as h2, h3 or p.',
     href: '/subtitle',
-    preview: <Subtitle as='p'>Subtitle</Subtitle>,
+    preview: <Subtitle as='p'>A supporting heading</Subtitle>,
   },
   {
     title: 'Paragraph',

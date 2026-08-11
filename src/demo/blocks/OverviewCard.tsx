@@ -3,6 +3,7 @@
 'use client';
 
 import React from 'react';
+import { PREVIEW_SURFACE } from './previewSurface';
 
 export interface OverviewCardProps {
   title: string;
@@ -44,10 +45,14 @@ export function OverviewCard({
       ].join(' ')}
     >
       {/* Thumbnail (항상 꽉 채우기) */}
-      <div className='aspect-[16/9] w-full bg-surface/60 overflow-hidden'>
+      <div
+        className='aspect-[16/9] w-full overflow-hidden'
+        style={preview ? PREVIEW_SURFACE : undefined}
+      >
         {preview ? (
-          // pointer-events-none — 카드 전체가 링크다. 안의 컨트롤이 클릭을 가로채면 안 된다
-          <div className='pointer-events-none flex h-full w-full items-center justify-center px-5'>
+          // 상세의 Preview 와 같은 바닥·같은 정렬 — 카드에서 본 그대로가 상세에 있다.
+          // pointer-events-none: 카드 전체가 링크다. 안의 컨트롤이 클릭을 가로채면 안 된다
+          <div className='pointer-events-none flex h-full w-full items-center justify-center px-6 py-6'>
             {preview}
           </div>
         ) : thumbnailSrc ? (
