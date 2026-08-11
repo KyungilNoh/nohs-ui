@@ -63,7 +63,7 @@ function Ramp({
   showLabels?: boolean;
 }) {
   return (
-    <section className='mb-10'>
+    <section className='mb-[72px]'>
       <div className='mb-3 flex items-baseline justify-between'>
         <Eyebrow tone='muted'>{label}</Eyebrow>
         <span className='text-[11px] text-subtle'>{vars.length} steps</span>
@@ -222,7 +222,7 @@ export default function TokensDemoPage() {
         grouped.map((g) => (
           // 머리글은 위 계조 바와 같은 꼴로 — 이름 왼쪽, 개수 오른쪽 한 줄.
           // 큰 숫자와 설명 문단을 끼우면 스와치보다 머리글이 무거워진다.
-          <section key={g.key} className='mb-10'>
+          <section key={g.key} className='mb-[72px]'>
             <div className='mb-3 flex items-baseline justify-between'>
               <Eyebrow tone='muted'>{g.label}</Eyebrow>
               <span className='text-[11px] text-subtle'>{g.items.length} tokens</span>
