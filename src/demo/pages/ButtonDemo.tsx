@@ -121,7 +121,7 @@ export default function ButtonDemoPage() {
               onChange={setLeftIconEnabled}
               size='md'
               disabled={iconOnly}
-              description={iconOnly ? 'Icon-only 모드에서는 Left icon이 항상 활성화됩니다.' : undefined}
+              description={iconOnly ? 'In icon-only mode the left icon is always on.' : undefined}
             />
             {(iconOnly || leftIconEnabled) ? (
               <div className={controlCompGap}>
@@ -145,7 +145,7 @@ export default function ButtonDemoPage() {
               onChange={setRightIconEnabled}
               size='md'
               disabled={iconOnly}
-              description={iconOnly ? 'Icon-only 모드에서는 Right icon을 사용하지 않습니다.' : undefined}
+              description={iconOnly ? 'Icon-only mode does not use a right icon.' : undefined}
             />
             {!iconOnly && rightIconEnabled ? (
               <div className={controlCompGap}>
@@ -215,28 +215,24 @@ export default function ButtonDemoPage() {
 
   const properties = useMemo<React.ComponentProps<typeof PropertyTable>['data']>(
     () => [
-      { name: 'variant', description: '버튼 스타일 변형을 설정합니다.', type: `'primary' | 'secondary' | 'ghost' | 'destructive'` },
-      { name: 'size', description: '버튼 크기를 설정합니다.', type: `'sm' | 'md' | 'lg'` },
-      { name: 'fullWidth', description: '버튼을 부모 너비에 맞춰 꽉 채웁니다.', type: 'boolean' },
-      { name: 'leftIconName', description: '왼쪽 아이콘 이름(MUI IconName)입니다.', type: 'IconName' },
-      { name: 'rightIconName', description: '오른쪽 아이콘 이름(MUI IconName)입니다.', type: 'IconName' },
-      { name: 'iconOnlyDefaultIconName', description: 'Icon-only일 때 기본 아이콘입니다.', type: 'IconName' },
-      { name: 'disabled', description: '비활성화 상태를 설정합니다.', type: 'boolean' },
+      { name: 'variant', description: 'Sets the button variant.', type: `'primary' | 'secondary' | 'ghost' | 'destructive'` },
+      { name: 'size', description: 'Sets the button size.', type: `'sm' | 'md' | 'lg'` },
+      { name: 'fullWidth', description: 'Stretches the button to the parent width.', type: 'boolean' },
+      { name: 'leftIconName', description: 'Name of the leading icon (MUI IconName).', type: 'IconName' },
+      { name: 'rightIconName', description: 'Name of the trailing icon (MUI IconName).', type: 'IconName' },
+      { name: 'iconOnlyDefaultIconName', description: 'Fallback icon used in icon-only mode.', type: 'IconName' },
+      { name: 'disabled', description: 'Disables the control.', type: 'boolean' },
       {
         name: 'children (type blurred)',
-        description: '버튼 라벨(텍스트/노드)입니다.',
+        description: 'The button label — text or nodes.',
         type: 'React.ReactNode',
         blur: true,
         blurColumns: ['type'],
       },
       {
         name: 'onClick',
-        description: '클릭 이벤트 핸들러입니다.',
-        type: `(event: React.MouseEvent<HTMLButtonElement>) => void
-        dddasdfasd
-        dddasdfasd
-        dddasdfasd
-        dddasdfasd`,
+        description: 'Click handler.',
+        type: `(event: React.MouseEvent<HTMLButtonElement>) => void`,
         blur: true,
       },
     ],

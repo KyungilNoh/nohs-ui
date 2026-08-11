@@ -3,6 +3,8 @@
 'use client';
 
 import React, { useMemo, useState, type ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
+import { backSectionFor } from './navMap';
 
 import {
   DemoPageHeader,
@@ -47,12 +49,16 @@ export default function LiveDemoTemplate({
   children,
   propertyTableProps,
 }: ComponentDemoProps) {
+  // 개별 데모면 속한 섹션으로 돌아갈 길을 헤더에 붙인다. 페이지마다 손으로
+  // 넘기게 두면 언젠가 빠뜨린다 — 경로에서 도출한다.
+  const { pathname } = useLocation();
+  const back = backSectionFor(pathname);
   // ✅ pageOnly면 탭/상태 자체가 필요 없음
   if (pageOnly) {
     return (
       <div className='min-h-screen bg-surface text-onsurface'>
         <div className='mx-auto max-w-6xl px-6 pt-20 py-10'>
-          <DemoPageHeader title={title} description={description} />
+          <DemoPageHeader title={title} description={description} backHref={back?.path} backLabel={back?.label} />
           <div className='mt-6'>{children}</div>
         </div>
       </div>
@@ -72,7 +78,7 @@ export default function LiveDemoTemplate({
   return (
     <div className='min-h-screen bg-surface text-onsurface'>
       <div className='mx-auto max-w-6xl px-6 pt-20 py-10'>
-        <DemoPageHeader title={title} description={description} />
+        <DemoPageHeader title={title} description={description} backHref={back?.path} backLabel={back?.label} />
 
         {/* Tabs */}
         <div className='border-b border-outline'>

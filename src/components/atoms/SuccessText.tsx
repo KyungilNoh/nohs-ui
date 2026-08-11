@@ -6,7 +6,7 @@ import React from 'react';
 import type { ControlSize } from '../_tokens/control';
 import { controlDescTextSize } from '../_tokens/control';
 
-type SuccessTextProps = {
+export type SuccessTextProps = {
   children: React.ReactNode;
   size?: ControlSize;
   className?: string;
@@ -16,7 +16,7 @@ type SuccessTextProps = {
 const cx = (...v: Array<string | false | null | undefined>) =>
   v.filter(Boolean).join(' ');
 
-export default function SuccessText({
+export function SuccessText({
   children,
   size = 'md',
   className,
@@ -35,3 +35,5 @@ export default function SuccessText({
     </p>
   );
 }
+
+export default SuccessText;

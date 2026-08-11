@@ -253,28 +253,28 @@ export default function CheckboxDemo() {
 
   const properties = useMemo(
     () => [
-      { name: 'label', description: '체크박스 라벨입니다. 의미상 항상 존재합니다.', type: 'React.ReactNode' },
+      { name: 'label', description: 'The checkbox label. Semantically it is always present.', type: 'React.ReactNode' },
       {
         name: 'labelHidden',
         description:
-          '라벨을 시각적으로 숨깁니다. (아이콘-only 옵션이 되며 description/error도 함께 숨김)',
+          'Hides the label visually. Becomes icon-only; description and error hide with it.',
         type: 'boolean',
       },
-      { name: 'description', description: '보조 설명 텍스트입니다.', type: 'React.ReactNode' },
-      { name: 'error', description: '에러 메시지(에러 상태)를 표시합니다.', type: 'string' },
-      { name: 'size', description: '체크박스 크기입니다.', type: `'sm' | 'md' | 'lg'` },
-      { name: 'fullWidth', description: 'wrapper를 부모 너비에 맞춥니다.', type: 'boolean' },
-      { name: 'checked', description: '체크 상태(Controlled)입니다.', type: 'boolean' },
-      { name: 'defaultChecked', description: '초기 체크 상태(Uncontrolled)입니다.', type: 'boolean' },
-      { name: 'disabled', description: '비활성화 상태입니다.', type: 'boolean' },
+      { name: 'description', description: 'Guidance text.', type: 'React.ReactNode' },
+      { name: 'error', description: 'Shows an error message.', type: 'string' },
+      { name: 'size', description: 'The checkbox size.', type: `'sm' | 'md' | 'lg'` },
+      { name: 'fullWidth', description: 'Stretches the wrapper to the parent width.', type: 'boolean' },
+      { name: 'checked', description: 'Checked state (controlled).', type: 'boolean' },
+      { name: 'defaultChecked', description: 'Initial checked state (uncontrolled).', type: 'boolean' },
+      { name: 'disabled', description: 'Disabled state.', type: 'boolean' },
       {
         name: 'onChange',
-        description: '체크 상태 변경 핸들러입니다.',
+        description: 'Change handler for the checked state.',
         type: `(event: React.ChangeEvent<HTMLInputElement>) => void`,
       },
       {
         name: 'aria-label',
-        description: 'labelHidden(아이콘-only) 상황에서 접근성 라벨로 권장됩니다.',
+        description: 'Recommended as the accessible name when labelHidden is on.',
         type: 'string',
       },
     ],

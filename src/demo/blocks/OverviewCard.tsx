@@ -13,6 +13,13 @@ export interface OverviewCardProps {
   thumbnailSrc?: string;
   thumbnailAlt?: string;
 
+  /**
+   * 썸네일 자리에 «실물 컴포넌트» 를 그린다. thumbnailSrc 보다 우선한다.
+   * 캡처 이미지는 실제와 어긋나기 시작하는 순간부터 거짓말이 된다 —
+   * 컴포넌트를 직접 그리면 어긋날 수가 없다.
+   */
+  preview?: React.ReactNode;
+
   rightMeta?: React.ReactNode;
 }
 
@@ -22,6 +29,7 @@ export function OverviewCard({
   href,
   thumbnailSrc,
   thumbnailAlt,
+  preview,
   rightMeta,
 }: OverviewCardProps) {
   return (
@@ -37,7 +45,12 @@ export function OverviewCard({
     >
       {/* Thumbnail (항상 꽉 채우기) */}
       <div className='aspect-[16/9] w-full bg-surface/60 overflow-hidden'>
-        {thumbnailSrc ? (
+        {preview ? (
+          // pointer-events-none — 카드 전체가 링크다. 안의 컨트롤이 클릭을 가로채면 안 된다
+          <div className='pointer-events-none flex h-full w-full items-center justify-center px-5'>
+            {preview}
+          </div>
+        ) : thumbnailSrc ? (
           <img
             src={thumbnailSrc}
             alt={thumbnailAlt ?? `${title} thumbnail`}

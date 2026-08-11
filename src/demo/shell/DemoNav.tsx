@@ -1,10 +1,16 @@
 // design-system/src/demo/shell/DemoNav.tsx
 
-import { NavLink } from 'react-router-dom';
-import { DS_ROUTES } from '../routes';
+import React from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { DS_NAV_ROUTES, navPathFor } from '../routes';
 import '../../styles/index.css';
 
 export default function DemoNav() {
+  // 개별 데모(/button 등)에 있어도 그 층(Molecules)이 선택된 채로 남아야 한다 —
+  // NavLink 의 isActive 는 자기 경로만 보므로 활성 판정을 직접 한다.
+  const { pathname } = useLocation();
+  const activePath = navPathFor(pathname);
+
   return (
     <>
       <style>{`
@@ -67,6 +73,16 @@ export default function DemoNav() {
           color: var(--ds-text);
         }
 
+        .demoNavGroup {
+          padding: 16px 12px 6px;
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          color: var(--ds-text-subtle, #94a3b8);
+        }
+        .demoNavGroup:first-child { padding-top: 6px; }
+
         .demoNavItem.isActive {
           background: var(--ds-active-layer);
           color: var(--ds-text);
@@ -77,24 +93,22 @@ export default function DemoNav() {
 
       <aside className='demoNav' aria-label='Design System navigation'>
         <nav className='demoNavList'>
-          {DS_ROUTES.map((item) => (
+          {DS_NAV_ROUTES.map((item) => (
             <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === '/'}
-              className={({ isActive }) =>
-                [
+                key={item.to}
+                to={item.to}
+                end={item.to === '/'}
+                className={[
                   'demoNavItem',
                   'ds-focus-visible-ring',
-                  isActive ? 'isActive' : '',
+                  activePath === item.to ? 'isActive' : '',
                 ]
                   .filter(Boolean)
-                  .join(' ')
-              }
-              title={item.tooltip ?? item.label}
-            >
-              <span className='demoNavLabel'>{item.label}</span>
-            </NavLink>
+                  .join(' ')}
+                title={item.tooltip ?? item.label}
+              >
+                <span className='demoNavLabel'>{item.label}</span>
+              </NavLink>
           ))}
         </nav>
       </aside>

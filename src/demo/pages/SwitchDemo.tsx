@@ -190,15 +190,15 @@ export default function SwitchDemoPage() {
 
   const properties = useMemo<React.ComponentProps<typeof PropertyTable>['data']>(
     () => [
-      { name: 'checked', description: '스위치의 on/off 상태를 제어합니다.', type: 'boolean' },
-      { name: 'onChange', description: '상태 변경 콜백입니다.', type: '(value: boolean) => void' },
-      { name: 'size', description: '스위치 크기를 설정합니다.', type: `'sm' | 'md' | 'lg'` },
-      { name: 'disabled', description: '비활성화 상태를 설정합니다.', type: 'boolean' },
-      { name: 'label', description: '스위치 라벨(의미는 항상 존재)입니다.', type: 'React.ReactNode' },
-      { name: 'labelHidden', description: '라벨을 시각적으로 숨깁니다(sr-only).', type: 'boolean' },
-      { name: 'labelPosition', description: '라벨 위치입니다.', type: `'left' | 'right'` },
-      { name: 'description', description: '보조 설명문(시각용)입니다.', type: 'React.ReactNode' },
-      { name: 'className', description: '추가 클래스입니다.', type: 'string' },
+      { name: 'checked', description: 'Controls the on/off state.', type: 'boolean' },
+      { name: 'onChange', description: 'Called when the state changes.', type: '(value: boolean) => void' },
+      { name: 'size', description: 'Sets the switch size.', type: `'sm' | 'md' | 'lg'` },
+      { name: 'disabled', description: 'Disables the control.', type: 'boolean' },
+      { name: 'label', description: 'The switch label. Semantically it is always present.', type: 'React.ReactNode' },
+      { name: 'labelHidden', description: 'Hides the label visually (sr-only).', type: 'boolean' },
+      { name: 'labelPosition', description: 'Which side the label sits on.', type: `'left' | 'right'` },
+      { name: 'description', description: 'Guidance text.', type: 'React.ReactNode' },
+      { name: 'className', description: 'Extra classes.', type: 'string' },
     ],
     []
   );
