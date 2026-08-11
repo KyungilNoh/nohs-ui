@@ -43,6 +43,54 @@ function collectTokenNames(): string[] {
   return [...names].sort();
 }
 
+const BRAND_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
+/** neutral 은 2씩 51단 — 전부 칠하면 한 줄이 그대로 그라디언트가 된다 */
+const NEUTRAL_STEPS = Array.from({ length: 51 }, (_, i) => i * 2);
+
+/**
+ * 큰 계조 바. 각 단에 커서를 올리면 그 칸이 솟고 이름·값이 뜬다 —
+ * 스와치를 눈으로 훑다가 필요한 순간에만 숫자를 읽게 한다.
+ */
+function Ramp({
+  label,
+  vars,
+  values,
+  showLabels,
+}: {
+  label: string;
+  vars: string[];
+  values: Record<string, string>;
+  showLabels?: boolean;
+}) {
+  return (
+    <section className='mb-10'>
+      <div className='mb-3 flex items-baseline justify-between'>
+        <Eyebrow tone='muted'>{label}</Eyebrow>
+        <span className='text-[11px] text-subtle'>{vars.length} steps</span>
+      </div>
+
+      <div className='dsRamp flex h-32 overflow-hidden rounded-2xl border border-outline/25'>
+        {vars.map((v) => (
+          <button
+            key={v}
+            type='button'
+            title={`${v} — ${values[v] ?? ''}`}
+            onClick={() => navigator.clipboard?.writeText(v)}
+            className='dsRampCell group relative flex-1 cursor-pointer border-0 p-0'
+            style={{ background: `rgb(var(${v}))` }}
+          >
+            <span className='dsRampTip pointer-events-none absolute inset-x-0 bottom-2 px-1 text-center opacity-0'>
+              <code className='block truncate text-[10px] font-semibold text-onprimary mix-blend-difference'>
+                {showLabels ? v.replace(/^--\w+-/, '') : ''}
+              </code>
+            </span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 /** 접두어로 갈래를 나눈다. 순서가 곧 화면 순서 */
 const GROUPS: Array<{ key: string; label: string; note: string; match: (n: string) => boolean }> = [
   {
@@ -50,18 +98,6 @@ const GROUPS: Array<{ key: string; label: string; note: string; match: (n: strin
     label: 'Semantic',
     note: 'The names components actually use. Raw colours are never called directly.',
     match: (n) => n.startsWith('--color-'),
-  },
-  {
-    key: 'brand',
-    label: 'Brand scale',
-    note: 'The brand ramp. Semantic names point here.',
-    match: (n) => n.startsWith('--brand-'),
-  },
-  {
-    key: 'neutral',
-    label: 'Neutral scale',
-    note: 'The neutral ramp. Source of backgrounds, borders and text colour.',
-    match: (n) => n.startsWith('--neutral-'),
   },
   {
     key: 'focus',
@@ -124,6 +160,11 @@ export default function TokensDemoPage() {
     return () => observer.disconnect();
   }, []);
 
+  const valueOf = useMemo(
+    () => Object.fromEntries(tokens.map((t) => [t.name, t.value])) as Record<string, string>,
+    [tokens]
+  );
+
   const grouped = useMemo(() => {
     const rest = new Set(tokens.map((t) => t.name));
     const out = GROUPS.map((g) => {
@@ -154,6 +195,29 @@ export default function TokensDemoPage() {
       properties={[]}
       controls={null}
     >
+      <style>{`
+        .dsRampCell { transition: flex-grow .3s cubic-bezier(.2,.7,.2,1), transform .3s; }
+        .dsRamp:hover .dsRampCell { flex-grow: .85; }
+        .dsRampCell:hover { flex-grow: 2.6; }
+        .dsRampTip { transition: opacity .2s; }
+        .dsRampCell:hover .dsRampTip { opacity: 1; }
+        @media (prefers-reduced-motion: reduce) {
+          .dsRampCell, .dsRampTip { transition: none !important; }
+        }
+      `}</style>
+
+      {tokens.length > 0 && (
+        <>
+          <Ramp
+            label='BRAND'
+            vars={BRAND_STEPS.map((n) => `--brand-${n}`)}
+            values={valueOf}
+            showLabels
+          />
+          <Ramp label='NEUTRAL' vars={NEUTRAL_STEPS.map((n) => `--neutral-${n}`)} values={valueOf} />
+        </>
+      )}
+
       {tokens.length === 0 ? (
         <Paragraph size='sm' tone='muted'>
           Could not read tokens. Cross-origin stylesheets are not accessible.
