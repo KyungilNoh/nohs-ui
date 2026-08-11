@@ -10,7 +10,13 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
   ref
 ) {
   /** 기본 Tailwind 구조 */
-  const base = 'p-4 bg-onprimary text-onsurface rounded-lg font-sans';
+  /**
+   * bg-surface 다. 이전에는 bg-onprimary 였는데, onprimary 는 «primary 위에 얹는
+   * 글자·아이콘 색» 이라 카드 배경으로는 의미가 어긋난다. 게다가 라이트·다크
+   * 양쪽에서 neutral-100(흰색)으로 고정이라 다크 테마에서 카드만 하얗게 남았다.
+   * surface 는 테마별로 갈리므로(라이트 neutral-100 · 다크 neutral-10) 따라온다.
+   */
+  const base = 'p-4 bg-surface text-onsurface rounded-lg font-sans';
 
   /** elevation 단계별 그림자 */
   const elevationClass =

@@ -59,17 +59,9 @@ export const PREVIEWS: Record<string, React.ReactNode> = {
     </Eyebrow>
   ),
   Label: (
-    <div className='w-full max-w-xs'>
-      <Label as={D.Label.as} variant={D.Label.variant} size={D.Label.size} htmlFor='preview-label'>
-        {D.Label.text}
-      </Label>
-      <input
-        id='preview-label'
-        readOnly
-        className='mt-1 w-full rounded border border-outline/50 px-3 py-2 text-sm'
-        placeholder='Clicking the label focuses this field'
-      />
-    </div>
+    <Label as={D.Label.as} variant={D.Label.variant} size={D.Label.size} htmlFor='preview-label'>
+      {D.Label.text}
+    </Label>
   ),
   HelperText: <HelperText size={D.HelperText.size}>{D.HelperText.text}</HelperText>,
   ErrorText: <ErrorText size={D.ErrorText.size}>{D.ErrorText.text}</ErrorText>,

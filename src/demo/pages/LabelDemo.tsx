@@ -20,17 +20,12 @@ export default function LabelDemoPage() {
   const [size, setSize] = useState<Size>(D.Label.size);
   const [hidden, setHidden] = useState(false);
 
+  // 쇼룸에 생짜 <input> 을 놓지 않는다 — 이 시스템의 컴포넌트가 아니다.
+  // htmlFor 가 무엇을 하는지는 속성표가 말한다.
   const demo = (
-    <div className='w-full max-w-xs'>
-      <Label as={as} variant={variant} size={size} hidden={hidden} htmlFor='label-demo-input'>
-        {text || 'Label'}
-      </Label>
-      <input
-        id='label-demo-input'
-        className='mt-1 w-full rounded border border-outline/50 px-3 py-2 text-sm'
-        placeholder='Clicking the label focuses this field'
-      />
-    </div>
+    <Label as={as} variant={variant} size={size} hidden={hidden} htmlFor='label-demo-input'>
+      {text || 'Label'}
+    </Label>
   );
 
   const controls = useMemo(
