@@ -22,7 +22,8 @@ export default function CheckboxDemo() {
   const [disabled, setDisabled] = useState(false);
 
   // ✅ 데모 기본값
-  const [fullWidth, setFullWidth] = useState(PREVIEW_FULL_WIDTH);
+  // Checkbox 는 칸을 채우는 필드가 아니다 — 프리뷰에서 가운데 놓이게 끈다
+  const [fullWidth, setFullWidth] = useState(false);
 
   const [label, setLabel] = useState('Checkbox');
   const [showLabel, setShowLabel] = useState(true);

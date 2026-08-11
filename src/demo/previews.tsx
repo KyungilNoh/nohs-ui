@@ -115,7 +115,9 @@ export const PREVIEWS: Record<string, React.ReactNode> = {
     />
     </div>
   ),
-  Checkbox: <Checkbox label={D.Checkbox.label} size={D.Checkbox.size} />,
+  // Checkbox 의 fullWidth 기본은 true 라 래퍼가 늘어나 내용이 왼쪽에 붙는다.
+  // Input 처럼 «칸을 채우는 필드» 가 아니므로 Switch 와 같이 내용만큼만 차지하게 한다.
+  Checkbox: <Checkbox label={D.Checkbox.label} size={D.Checkbox.size} fullWidth={false} />,
   Switch: <Switch label={D.Switch.label} size={D.Switch.size} defaultChecked={D.Switch.checked} />,
   Card: (
     <Card elevation={D.Card.elevation} className={D.Card.maxW}>
