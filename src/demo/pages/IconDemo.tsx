@@ -4,6 +4,7 @@
 
 import React, { useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
+import { D } from '../previewDefaults';
 
 import { Icon, Input, Select } from '@ds';
 import type { IconName } from '@ds';
@@ -18,22 +19,15 @@ const COMMON: IconName[] = [
 ] as IconName[];
 
 export default function IconDemoPage() {
-  const [name, setName] = useState<IconName>('SmartToy' as IconName);
+  const [name, setName] = useState<IconName>(D.Icon.name as IconName);
   const [custom, setCustom] = useState('');
-  const [fontSize, setFontSize] = useState<FontSize>('large');
+  const [fontSize, setFontSize] = useState<FontSize>(D.Icon.fontSize);
 
   const active = (custom.trim() || name) as IconName;
 
-  const demo = (
-    <div className='flex items-center gap-6'>
-      <Icon name={active} fontSize={fontSize} />
-      <div className='flex items-center gap-3 opacity-60'>
-        {COMMON.slice(0, 6).map((n) => (
-          <Icon key={n} name={n} fontSize='medium' />
-        ))}
-      </div>
-    </div>
-  );
+  // 프리뷰는 «지금 고른 것» 하나만 보여준다 — 옆에 다른 아이콘을 늘어놓으면
+  // 무엇이 선택된 것인지 흐려지고, 컨트롤을 바꿔도 변화가 눈에 안 들어온다.
+  const demo = <Icon name={active} fontSize={fontSize} />;
 
   const controls = useMemo(
     () => (

@@ -4,6 +4,7 @@
 
 import React, { useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
+import { D, PREVIEW_FIELD_W, PREVIEW_FULL_WIDTH } from '../previewDefaults';
 
 import { Textarea, Input, Label, Switch, Select } from '@ds';
 import { PropertyTable } from '@dds';
@@ -12,17 +13,19 @@ import { controlFieldLabelToContentGap, controlGroupInnerGap } from '../../compo
 type Size = 'sm' | 'md';
 
 export default function TextareaDemoPage() {
-  const [size, setSize] = useState<Size>('md');
-  const [label, setLabel] = useState('Message');
-  const [placeholder, setPlaceholder] = useState('Write something');
-  const [description, setDescription] = useState('Up to 500 characters.');
+  const [size, setSize] = useState<Size>(D.Textarea.size);
+  const [label, setLabel] = useState<string>(D.Textarea.label);
+  const [placeholder, setPlaceholder] = useState<string>(D.Textarea.placeholder);
+  const [description, setDescription] = useState<string>(D.Textarea.description);
 
   const [showDescription, setShowDescription] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [disabled, setDisabled] = useState(false);
-  const [fullWidth, setFullWidth] = useState(true);
+  const [fullWidth, setFullWidth] = useState(PREVIEW_FULL_WIDTH);
 
   const demo = (
+    // 폼 컨트롤은 같은 폭 칸에 담는다 — 나란히 놓았을 때 폭이 맞아야 한다
+    <div className={PREVIEW_FIELD_W}>
     <Textarea
       label={label || undefined}
       placeholder={placeholder}
@@ -32,6 +35,7 @@ export default function TextareaDemoPage() {
       disabled={disabled}
       fullWidth={fullWidth}
     />
+    </div>
   );
 
   const controls = useMemo(

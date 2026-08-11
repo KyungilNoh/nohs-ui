@@ -4,6 +4,7 @@
 
 import React, { useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
+import { D } from '../previewDefaults';
 
 import { HelperText, Input, Select } from '@ds';
 import { PropertyTable } from '@dds';
@@ -11,8 +12,8 @@ import { PropertyTable } from '@dds';
 type Size = 'sm' | 'md' | 'lg';
 
 export default function HelperTextDemoPage() {
-  const [text, setText] = useState('Use at least 8 characters.');
-  const [size, setSize] = useState<Size>('md');
+  const [text, setText] = useState<string>(D.HelperText.text);
+  const [size, setSize] = useState<Size>(D.HelperText.size);
 
   const demo = <HelperText size={size}>{text || 'Use at least 8 characters.'}</HelperText>;
 

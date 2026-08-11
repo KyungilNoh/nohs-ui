@@ -4,6 +4,7 @@
 
 import React, { useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
+import { D } from '../previewDefaults';
 
 import { Tag, Icon, Input, Label, Select, Switch } from '@ds';
 import { PropertyTable } from '@dds';
@@ -13,9 +14,9 @@ type Variant = 'default' | 'primary' | 'success' | 'warning' | 'danger';
 type Size = 'sm' | 'md';
 
 export default function TagDemoPage() {
-  const [variant, setVariant] = useState<Variant>('primary');
-  const [size, setSize] = useState<Size>('md');
-  const [text, setText] = useState('Tag');
+  const [variant, setVariant] = useState<Variant>(D.Tag.variant);
+  const [size, setSize] = useState<Size>(D.Tag.size);
+  const [text, setText] = useState<string>(D.Tag.text);
   const [withIcon, setWithIcon] = useState(false);
   const [removable, setRemovable] = useState(false);
   const [disabled, setDisabled] = useState(false);

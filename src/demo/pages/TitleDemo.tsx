@@ -4,6 +4,7 @@
 
 import React, { useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
+import { D } from '../previewDefaults';
 
 import { Title, Input, Select } from '@ds';
 import { PropertyTable } from '@dds';
@@ -13,9 +14,9 @@ type TitleWeight = 'semibold' | 'bold' | 'extrabold';
 
 
 export default function TitleDemoPage() {
-  const [text, setText] = useState('A heading');
-  const [align, setAlign] = useState<TitleAlign>('left');
-  const [weight, setWeight] = useState<TitleWeight>('bold');
+  const [text, setText] = useState<string>(D.Title.text);
+  const [align, setAlign] = useState<TitleAlign>(D.Title.align);
+  const [weight, setWeight] = useState<TitleWeight>(D.Title.weight);
 
 
   const demo = <Title align={align} weight={weight}>{text || 'A heading'}</Title>;

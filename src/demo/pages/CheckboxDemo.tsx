@@ -4,6 +4,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
+import { PREVIEW_FULL_WIDTH } from '../previewDefaults';
 
 import { Checkbox, Input, Label, Switch, Select } from '@ds';
 import { PropertyTable } from '@dds';
@@ -21,7 +22,7 @@ export default function CheckboxDemo() {
   const [disabled, setDisabled] = useState(false);
 
   // ✅ 데모 기본값
-  const [fullWidth, setFullWidth] = useState(false);
+  const [fullWidth, setFullWidth] = useState(PREVIEW_FULL_WIDTH);
 
   const [label, setLabel] = useState('Checkbox');
   const [showLabel, setShowLabel] = useState(true);

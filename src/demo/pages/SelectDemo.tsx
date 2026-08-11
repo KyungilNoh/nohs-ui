@@ -4,6 +4,7 @@
 
 import React, { useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
+import { D, PREVIEW_FIELD_W, PREVIEW_FULL_WIDTH } from '../previewDefaults';
 
 import { Select, Input, Label, Switch } from '@ds';
 import { PropertyTable } from '@dds';
@@ -19,18 +20,20 @@ const SAMPLE_OPTIONS = [
 ];
 
 export default function SelectDemoPage() {
-  const [size, setSize] = useState<Size>('md');
-  const [value, setValue] = useState('seoul');
-  const [label, setLabel] = useState('City');
-  const [description, setDescription] = useState('Choose a delivery city.');
+  const [size, setSize] = useState<Size>(D.Select.size);
+  const [value, setValue] = useState<string>(D.Select.value);
+  const [label, setLabel] = useState<string>(D.Select.label);
+  const [description, setDescription] = useState<string>(D.Select.description);
 
   const [labelHidden, setLabelHidden] = useState(false);
   const [showDescription, setShowDescription] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [disabled, setDisabled] = useState(false);
-  const [fullWidth, setFullWidth] = useState(true);
+  const [fullWidth, setFullWidth] = useState(PREVIEW_FULL_WIDTH);
 
   const demo = (
+    // 폼 컨트롤은 같은 폭 칸에 담는다 — 나란히 놓았을 때 폭이 맞아야 한다
+    <div className={PREVIEW_FIELD_W}>
     <Select
       label={label || undefined}
       labelHidden={labelHidden}
@@ -43,6 +46,7 @@ export default function SelectDemoPage() {
       disabled={disabled}
       fullWidth={fullWidth}
     />
+    </div>
   );
 
   const controls = useMemo(

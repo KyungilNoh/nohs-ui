@@ -4,6 +4,7 @@
 
 import React, { useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
+import { PREVIEW_FIELD_W, PREVIEW_FULL_WIDTH } from '../previewDefaults';
 
 import { Input, Label, Select, Switch, Checkbox } from '@ds';
 import { PropertyTable } from '@dds';
@@ -26,7 +27,7 @@ export default function InputDemoPage() {
   const [size, setSize] = useState<Size>('md');
 
   const [disabled, setDisabled] = useState(false);
-  const [fullWidth, setFullWidth] = useState(false);
+  const [fullWidth, setFullWidth] = useState(PREVIEW_FULL_WIDTH);
 
   const [type, setType] = useState<Type>('text');
 
@@ -88,6 +89,8 @@ export default function InputDemoPage() {
   };
 
   const demo = (
+    // 폼 컨트롤은 같은 폭 칸에 담는다 — 나란히 놓았을 때 폭이 맞아야 한다
+    <div className={PREVIEW_FIELD_W}>
     <Input
       label={label || 'Label'}
       labelHidden={!labelEnabled}
@@ -114,6 +117,7 @@ export default function InputDemoPage() {
           : undefined
       }
     />
+    </div>
   );
 
   const controls = useMemo(

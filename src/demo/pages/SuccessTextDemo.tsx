@@ -4,6 +4,7 @@
 
 import React, { useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
+import { D } from '../previewDefaults';
 
 import { SuccessText, Input, Select } from '@ds';
 import { PropertyTable } from '@dds';
@@ -11,8 +12,8 @@ import { PropertyTable } from '@dds';
 type Size = 'sm' | 'md' | 'lg';
 
 export default function SuccessTextDemoPage() {
-  const [text, setText] = useState('That name is available.');
-  const [size, setSize] = useState<Size>('md');
+  const [text, setText] = useState<string>(D.SuccessText.text);
+  const [size, setSize] = useState<Size>(D.SuccessText.size);
 
   const demo = <SuccessText size={size}>{text || 'That name is available.'}</SuccessText>;
 

@@ -4,6 +4,7 @@
 
 import React, { useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
+import { D } from '../previewDefaults';
 
 import { Label, Input, Select, Switch } from '@ds';
 import { PropertyTable } from '@dds';
@@ -13,10 +14,10 @@ type LabelVariant = 'field' | 'control';
 type Size = 'sm' | 'md' | 'lg';
 
 export default function LabelDemoPage() {
-  const [text, setText] = useState('Label');
-  const [as, setAs] = useState<LabelAs>('label');
-  const [variant, setVariant] = useState<LabelVariant>('field');
-  const [size, setSize] = useState<Size>('md');
+  const [text, setText] = useState<string>(D.Label.text);
+  const [as, setAs] = useState<LabelAs>(D.Label.as);
+  const [variant, setVariant] = useState<LabelVariant>(D.Label.variant);
+  const [size, setSize] = useState<Size>(D.Label.size);
   const [hidden, setHidden] = useState(false);
 
   const demo = (

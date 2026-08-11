@@ -4,6 +4,7 @@
 
 import React, { useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
+import { D } from '../previewDefaults';
 
 import { SectionHeader, Input, Label, Switch, Select } from '@ds';
 import { PropertyTable } from '@dds';
@@ -12,10 +13,10 @@ import { controlFieldLabelToContentGap, controlGroupInnerGap } from '../../compo
 type Align = 'left' | 'center' | 'right';
 
 export default function SectionHeaderDemoPage() {
-  const [align, setAlign] = useState<Align>('left');
-  const [eyebrow, setEyebrow] = useState('SECTION');
-  const [title, setTitle] = useState('Section title');
-  const [description, setDescription] = useState('One line on what this section covers.');
+  const [align, setAlign] = useState<Align>(D.SectionHeader.align);
+  const [eyebrow, setEyebrow] = useState<string>(D.SectionHeader.eyebrow);
+  const [title, setTitle] = useState<string>(D.SectionHeader.title);
+  const [description, setDescription] = useState<string>(D.SectionHeader.description);
 
   const [showEyebrow, setShowEyebrow] = useState(true);
   const [showDescription, setShowDescription] = useState(true);

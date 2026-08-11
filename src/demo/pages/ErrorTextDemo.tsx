@@ -4,6 +4,7 @@
 
 import React, { useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
+import { D } from '../previewDefaults';
 
 import { ErrorText, Input, Select } from '@ds';
 import { PropertyTable } from '@dds';
@@ -11,8 +12,8 @@ import { PropertyTable } from '@dds';
 type Size = 'sm' | 'md' | 'lg';
 
 export default function ErrorTextDemoPage() {
-  const [text, setText] = useState('That is not a valid email.');
-  const [size, setSize] = useState<Size>('md');
+  const [text, setText] = useState<string>(D.ErrorText.text);
+  const [size, setSize] = useState<Size>(D.ErrorText.size);
 
   const demo = <ErrorText size={size}>{text || 'That is not a valid email.'}</ErrorText>;
 

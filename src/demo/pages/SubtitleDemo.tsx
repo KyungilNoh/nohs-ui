@@ -4,6 +4,7 @@
 
 import React, { useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
+import { D } from '../previewDefaults';
 
 import { Subtitle, Input, Select } from '@ds';
 import { PropertyTable } from '@dds';
@@ -15,11 +16,11 @@ type SubtitleTone = 'default' | 'muted';
 
 
 export default function SubtitleDemoPage() {
-  const [text, setText] = useState('A supporting heading');
-  const [as, setAs] = useState<SubtitleAs>('h3');
-  const [align, setAlign] = useState<SubtitleAlign>('left');
-  const [weight, setWeight] = useState<SubtitleWeight>('medium');
-  const [tone, setTone] = useState<SubtitleTone>('default');
+  const [text, setText] = useState<string>(D.Subtitle.text);
+  const [as, setAs] = useState<SubtitleAs>(D.Subtitle.as);
+  const [align, setAlign] = useState<SubtitleAlign>(D.Subtitle.align);
+  const [weight, setWeight] = useState<SubtitleWeight>(D.Subtitle.weight);
+  const [tone, setTone] = useState<SubtitleTone>(D.Subtitle.tone);
 
 
   const demo = <Subtitle as={as} align={align} weight={weight} tone={tone}>{text || 'A supporting heading'}</Subtitle>;

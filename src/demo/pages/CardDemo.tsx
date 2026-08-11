@@ -4,6 +4,7 @@
 
 import React, { useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
+import { D } from '../previewDefaults';
 
 import { Card, Input, Select, Subtitle, Paragraph } from '@ds';
 import { PropertyTable } from '@dds';
@@ -11,9 +12,9 @@ import { PropertyTable } from '@dds';
 type Elevation = 'none' | 'sm' | 'md' | 'lg';
 
 export default function CardDemoPage() {
-  const [elevation, setElevation] = useState<Elevation>('sm');
-  const [title, setTitle] = useState('Card title');
-  const [body, setBody] = useState('A card is a surface that holds content. Elevation gives it depth.');
+  const [elevation, setElevation] = useState<Elevation>(D.Card.elevation);
+  const [title, setTitle] = useState<string>(D.Card.title);
+  const [body, setBody] = useState<string>(D.Card.body);
 
   const demo = (
     <Card elevation={elevation} className='max-w-sm'>

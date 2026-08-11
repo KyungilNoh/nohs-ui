@@ -4,6 +4,7 @@
 
 import React, { useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
+import { D } from '../previewDefaults';
 
 import { Paragraph, Input, Select } from '@ds';
 import { PropertyTable } from '@dds';
@@ -15,11 +16,11 @@ type ParagraphTone = 'default' | 'muted' | 'strong';
 
 
 export default function ParagraphDemoPage() {
-  const [text, setText] = useState('Body copy sized and spaced for reading.');
-  const [size, setSize] = useState<ParagraphSize>('md');
-  const [weight, setWeight] = useState<ParagraphWeight>('regular');
-  const [align, setAlign] = useState<ParagraphAlign>('left');
-  const [tone, setTone] = useState<ParagraphTone>('default');
+  const [text, setText] = useState<string>(D.Paragraph.text);
+  const [size, setSize] = useState<ParagraphSize>(D.Paragraph.size);
+  const [weight, setWeight] = useState<ParagraphWeight>(D.Paragraph.weight);
+  const [align, setAlign] = useState<ParagraphAlign>(D.Paragraph.align);
+  const [tone, setTone] = useState<ParagraphTone>(D.Paragraph.tone);
 
 
   const demo = <Paragraph size={size} weight={weight} align={align} tone={tone}>{text || 'Body copy sized and spaced for reading.'}</Paragraph>;

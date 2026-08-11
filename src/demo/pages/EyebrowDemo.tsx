@@ -4,6 +4,7 @@
 
 import React, { useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
+import { D } from '../previewDefaults';
 
 import { Eyebrow, Input, Select } from '@ds';
 import { PropertyTable } from '@dds';
@@ -13,9 +14,9 @@ type EyebrowTone = 'default' | 'muted' | 'primary';
 
 
 export default function EyebrowDemoPage() {
-  const [text, setText] = useState('EYEBROW');
-  const [align, setAlign] = useState<EyebrowAlign>('left');
-  const [tone, setTone] = useState<EyebrowTone>('default');
+  const [text, setText] = useState<string>(D.Eyebrow.text);
+  const [align, setAlign] = useState<EyebrowAlign>(D.Eyebrow.align);
+  const [tone, setTone] = useState<EyebrowTone>(D.Eyebrow.tone);
 
 
   const demo = <Eyebrow align={align} tone={tone}>{text || 'EYEBROW'}</Eyebrow>;
