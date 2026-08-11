@@ -59,9 +59,17 @@ export const PREVIEWS: Record<string, React.ReactNode> = {
     </Eyebrow>
   ),
   Label: (
-    <Label as={D.Label.as} variant={D.Label.variant} size={D.Label.size} htmlFor='preview-label'>
-      {D.Label.text}
-    </Label>
+    <div className='w-full max-w-xs'>
+      <Label as={D.Label.as} variant={D.Label.variant} size={D.Label.size} htmlFor='preview-label'>
+        {D.Label.text}
+      </Label>
+      <input
+        id='preview-label'
+        readOnly
+        className='mt-1 w-full rounded border border-outline/50 px-3 py-2 text-sm'
+        placeholder='Clicking the label focuses this field'
+      />
+    </div>
   ),
   HelperText: <HelperText size={D.HelperText.size}>{D.HelperText.text}</HelperText>,
   ErrorText: <ErrorText size={D.ErrorText.size}>{D.ErrorText.text}</ErrorText>,
@@ -110,7 +118,7 @@ export const PREVIEWS: Record<string, React.ReactNode> = {
   Checkbox: <Checkbox label={D.Checkbox.label} size={D.Checkbox.size} />,
   Switch: <Switch label={D.Switch.label} size={D.Switch.size} defaultChecked={D.Switch.checked} />,
   Card: (
-    <Card elevation={D.Card.elevation}>
+    <Card elevation={D.Card.elevation} className={D.Card.maxW}>
       <Subtitle as='p'>{D.Card.title}</Subtitle>
       <Paragraph size='sm' tone='muted' className='mt-1'>
         {D.Card.body}

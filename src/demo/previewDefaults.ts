@@ -21,6 +21,7 @@ export const D = {
     tone: 'default',
   },
   Eyebrow: { text: 'EYEBROW', align: 'left', tone: 'default' },
+  /** Label 은 홀로 두면 htmlFor 가 무엇을 가리키는지 안 보인다 — 상세처럼 묶인 입력까지 함께 그린다 */
   Label: { text: 'Label', as: 'label', variant: 'field', size: 'md', hidden: false },
   HelperText: { text: 'Use at least 8 characters.', size: 'md' },
   ErrorText: { text: 'That is not a valid email.', size: 'md' },
@@ -40,8 +41,10 @@ export const D = {
   },
   Select: { label: 'City', description: 'Choose a delivery city.', size: 'md', value: 'seoul' },
   Checkbox: { label: 'Checkbox', size: 'md' },
-  Switch: { label: 'Switch', size: 'md', checked: true },
+  Switch: { label: 'Switch', size: 'md', checked: false },
   Card: {
+    /** 상세가 max-w-sm 로 담는다 — 카드도 같은 폭이라야 같은 그림이 된다 */
+    maxW: 'max-w-sm',
     title: 'Card title',
     body: 'A card is a surface that holds content. Elevation gives it depth.',
     elevation: 'sm',

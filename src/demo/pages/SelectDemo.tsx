@@ -4,20 +4,13 @@
 
 import React, { useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
-import { D, PREVIEW_FIELD_W, PREVIEW_FULL_WIDTH } from '../previewDefaults';
+import { D, PREVIEW_FIELD_W, PREVIEW_FULL_WIDTH, SELECT_OPTIONS } from '../previewDefaults';
 
 import { Select, Input, Label, Switch } from '@ds';
 import { PropertyTable } from '@dds';
 import { controlFieldLabelToContentGap, controlGroupInnerGap } from '../../components/_tokens/control';
 
 type Size = 'sm' | 'md' | 'lg';
-
-const SAMPLE_OPTIONS = [
-  { value: 'seoul', label: 'Seoul' },
-  { value: 'busan', label: 'Busan' },
-  { value: 'daegu', label: 'Daegu' },
-  { value: 'incheon', label: 'Incheon' },
-];
 
 export default function SelectDemoPage() {
   const [size, setSize] = useState<Size>(D.Select.size);
@@ -39,7 +32,7 @@ export default function SelectDemoPage() {
       labelHidden={labelHidden}
       value={value}
       onChange={(e) => setValue(e.target.value)}
-      options={SAMPLE_OPTIONS}
+      options={SELECT_OPTIONS}
       description={showDescription ? description : undefined}
       error={hasError ? 'Please choose a city.' : undefined}
       size={size}

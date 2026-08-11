@@ -4,6 +4,7 @@
 
 import React, { useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
+import { D } from '../previewDefaults';
 
 import { Button, Input, Label, Switch, Select } from '@ds';
 import { PropertyTable } from '@dds';
@@ -14,13 +15,13 @@ type Variant = 'primary' | 'secondary' | 'ghost' | 'destructive';
 type Size = 'sm' | 'md' | 'lg';
 
 export default function ButtonDemoPage() {
-  const [variant, setVariant] = useState<Variant>('primary');
-  const [size, setSize] = useState<Size>('md');
+  const [variant, setVariant] = useState<Variant>(D.Button.variant);
+  const [size, setSize] = useState<Size>(D.Button.size);
 
   const [disabled, setDisabled] = useState(false);
   const [fullWidth, setFullWidth] = useState(false);
 
-  const [label, setLabel] = useState('Button');
+  const [label, setLabel] = useState<string>(D.Button.text);
 
   const [leftIconEnabled, setLeftIconEnabled] = useState(false);
   const [rightIconEnabled, setRightIconEnabled] = useState(false);
