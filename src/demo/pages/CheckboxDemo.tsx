@@ -265,7 +265,7 @@ export default function CheckboxDemo() {
       { name: 'description', description: 'Guidance text.', type: 'React.ReactNode' },
       { name: 'error', description: 'Shows an error message.', type: 'string' },
       { name: 'size', description: 'The checkbox size.', type: `'sm' | 'md' | 'lg'` },
-      { name: 'fullWidth', description: 'Stretches the wrapper to the parent width.', type: 'boolean' },
+      { name: 'fullWidth', description: 'Stretches the wrapper to the parent width. Off by default — a checkbox is a mark with a label, not a text field.', type: 'boolean' },
       { name: 'checked', description: 'Checked state (controlled).', type: 'boolean' },
       { name: 'defaultChecked', description: 'Initial checked state (uncontrolled).', type: 'boolean' },
       { name: 'disabled', description: 'Disabled state.', type: 'boolean' },

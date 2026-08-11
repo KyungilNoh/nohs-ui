@@ -44,7 +44,13 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       error,
 
       size = 'md',
-      fullWidth = true,
+      /**
+       * 기본은 false 다. Input·Select·Textarea 는 «칸을 채우는 필드» 라 true 가
+       * 맞지만, 체크박스는 글상자가 아니라 표식 + 라벨이다. 부모 폭을 다 먹으면
+       * 옆에 뭘 놓을 수 없고, 가운데 정렬된 자리에서 혼자 왼쪽에 붙는다.
+       * 목록에서 행 전체를 차지해야 할 때만 켠다.
+       */
+      fullWidth = false,
       wrapperClassName,
       className,
 
