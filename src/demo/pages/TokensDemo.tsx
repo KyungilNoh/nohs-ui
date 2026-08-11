@@ -4,7 +4,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
-import { Eyebrow, Paragraph, Subtitle } from '@ds';
+import { Eyebrow, Paragraph } from '@ds';
 
 /**
  * 디자인 토큰 목록.
@@ -92,23 +92,20 @@ function Ramp({
 }
 
 /** 접두어로 갈래를 나눈다. 순서가 곧 화면 순서 */
-const GROUPS: Array<{ key: string; label: string; note: string; match: (n: string) => boolean }> = [
+const GROUPS: Array<{ key: string; label: string; match: (n: string) => boolean }> = [
   {
     key: 'semantic',
     label: 'Semantic',
-    note: 'The names components actually use. Raw colours are never called directly.',
     match: (n) => n.startsWith('--color-'),
   },
   {
     key: 'focus',
     label: 'Focus ring',
-    note: 'Keyboard focus. Width, offset and colour are tokens so no control drifts.',
     match: (n) => n.startsWith('--focus-ring'),
   },
   {
     key: 'font',
     label: 'Typography',
-    note: 'Font stacks.',
     match: (n) => n.startsWith('--font-'),
   },
 ];
@@ -178,7 +175,6 @@ export default function TokensDemoPage() {
       out.push({
         key: 'etc',
         label: 'Etc',
-        note: 'Everything that does not fall into the groups above.',
         match: () => false,
         items: leftovers,
       });
@@ -224,15 +220,14 @@ export default function TokensDemoPage() {
         </Paragraph>
       ) : (
         grouped.map((g) => (
+          // 머리글은 위 계조 바와 같은 꼴로 — 이름 왼쪽, 개수 오른쪽 한 줄.
+          // 큰 숫자와 설명 문단을 끼우면 스와치보다 머리글이 무거워진다.
           <section key={g.key} className='mb-10'>
-            <Eyebrow tone='muted'>{g.label}</Eyebrow>
-            <Subtitle as='p' className='mt-1'>
-              {g.items.length}
-            </Subtitle>
-            <Paragraph size='sm' tone='muted' className='mt-1'>
-              {g.note}
-            </Paragraph>
-            <div className='mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3'>
+            <div className='mb-3 flex items-baseline justify-between'>
+              <Eyebrow tone='muted'>{g.label}</Eyebrow>
+              <span className='text-[11px] text-subtle'>{g.items.length} tokens</span>
+            </div>
+            <div className='grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3'>
               {g.items.map((t) => (
                 <Swatch key={t.name} token={t} />
               ))}
