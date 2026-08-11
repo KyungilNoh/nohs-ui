@@ -196,25 +196,3 @@ export const ATOMS: Entry[] = [
     ),
   },
 ];
-
-/**
- * 손으로 만든 레터링. 컴포넌트가 아니라 이 시스템이 지향하는 결이다 —
- * 그래서 preview 가 아니라 이미지 그대로 둔다.
- */
-export const LETTERING = [
-  {
-    title: 'Design',
-    description: 'Legible before pretty. Rules come first; decoration comes after.',
-    thumbnailSrc: '/demo/thumbnails/design.png',
-  },
-  {
-    title: 'Fun',
-    description: 'People keep using what they enjoy. Components are no different.',
-    thumbnailSrc: '/demo/thumbnails/fun.png',
-  },
-  {
-    title: 'Created',
-    description: 'Built, not borrowed — from tokens all the way to accessibility.',
-    thumbnailSrc: '/demo/thumbnails/created.png',
-  },
-] as const;
