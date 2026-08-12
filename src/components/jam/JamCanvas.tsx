@@ -993,19 +993,34 @@ export function Board({
         stampFnRef.current?.(e.clientX, e.clientY);
         return;
       }
-      const additive = e.shiftKey || e.metaKey;
+      /*
+        무엇을 함께 끌지 «지금» 정한다.
 
-      let group: string[] = [id];
-      setSelected((prev) => {
-        const next = additive
-          ? new Set(prev)
-          : prev.has(id)
-            ? new Set(prev)
-            : new Set<string>();
-        next.add(id);
-        group = [...next];
-        return next;
-      });
+        전에는 setSelected 의 업데이터 안에서 그룹을 계산했다. 그 함수는 다음
+        렌더에 실행되는데 끌기는 그 전에 시작되므로, 여럿을 골라 놓고 끌어도
+        누른 조각 하나만 움직였다. 선택 계산은 부르는 자리에서 끝낸다.
+
+        규칙은 여느 편집기와 같다.
+          이미 고른 것을 누르면   선택을 그대로 두고 «다 같이» 끈다
+          안 고른 것을 누르면     그것만 골라 그것만 끈다
+          shift·⌘ 로 누르면       선택에 넣고 빼기만 한다 (끌지 않는다)
+      */
+      const additive = e.shiftKey || e.metaKey;
+      const prev = selectedRef.current;
+      let group: string[];
+
+      if (additive) {
+        const next = new Set(prev);
+        if (next.has(id)) next.delete(id);
+        else next.add(id);
+        setSelected(next);
+        /* 넣고 빼는 동작이라 여기서 끌기까지 시작하지 않는다 */
+        return;
+      }
+
+      const next = prev.has(id) ? new Set(prev) : new Set<string>([id]);
+      group = [...next];
+      setSelected(next);
 
       const sx = e.clientX;
       const sy = e.clientY;
