@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   createContext,
@@ -13,7 +13,7 @@ import {
   type MouseEvent as ReactMouseEvent,
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
-} from 'react';
+} from "react";
 
 /**
  * nohsJam — 만질 수 있는 판.
@@ -54,7 +54,7 @@ interface BoardCtx {
   beginRotate: (id: string, e: ReactPointerEvent) => void;
   scaleOf: (id: string) => number;
   setScale: (id: string, s: number) => void;
-  tool: 'select' | 'pen' | 'sticker';
+  tool: "select" | "pen" | "sticker";
   reportSize: (id: string, size: Size) => void;
   registerInitial: (id: string, at: Point) => void;
   registerPanel: (id: string, title: string, node: ReactNode) => void;
@@ -91,24 +91,31 @@ export function BoardChrome({
 
 function useBoard() {
   const ctx = useContext(Ctx);
-  if (!ctx) throw new Error('Board 안에서만 쓸 수 있습니다');
+  if (!ctx) throw new Error("Board 안에서만 쓸 수 있습니다");
   return ctx;
 }
 
 /** "40,60" → {x:40,y:60} */
 function parseAt(at?: string): Point {
   if (!at) return { x: 0, y: 0 };
-  const [x, y] = at.split(',').map((n) => parseFloat(n.trim()));
+  const [x, y] = at.split(",").map((n) => parseFloat(n.trim()));
   return { x: Number.isFinite(x) ? x : 0, y: Number.isFinite(y) ? y : 0 };
 }
 
 /* 마커 색 — 판 위에 얹히는 것이라 두 테마 모두에서 같은 색으로 보인다 */
-const INKS = ['#E4483F', '#2C6BE4', '#1F9D57', '#E0961B', '#8B49D6', '#2C3038'] as const;
+const INKS = [
+  "#E4483F",
+  "#2C6BE4",
+  "#1F9D57",
+  "#E0961B",
+  "#8B49D6",
+  "#2C3038",
+] as const;
 
 /** 보는 사람이 얹은 것 — 쪽지(글)와 스티커(그림) 둘 다 같은 규칙으로 다룬다 */
 export interface UserPiece {
   id: string;
-  kind: 'note' | 'sticker';
+  kind: "note" | "sticker";
   x: number;
   y: number;
   /** kind === 'note' */
@@ -136,12 +143,12 @@ export interface Stroke {
 function scatter(seq: number): number {
   let h = Math.imul(seq + 1, 2654435761) >>> 0;
   h ^= h >>> 13;
-  return ((h % 1700) / 100) - 8.5;
+  return (h % 1700) / 100 - 8.5;
 }
 
 /** 점을 부드러운 곡선으로 잇는다 — 꺾인 폴리라인은 «손으로 그린 것» 으로 안 읽힌다 */
 function toPath(pts: Point[]): string {
-  if (pts.length < 2) return '';
+  if (pts.length < 2) return "";
   let d = `M ${pts[0].x} ${pts[0].y}`;
   for (let i = 1; i < pts.length - 1; i++) {
     const mx = (pts[i].x + pts[i + 1].x) / 2;
@@ -155,13 +162,13 @@ function toPath(pts: Point[]): string {
 
 /* 손그림 화살표에 쓰는 마커 색 — 판 위에 얹히므로 두 테마에서 같은 색이다 */
 const MARKER = {
-  orange: '#F0932B',
-  blue: '#3B82F6',
-  green: '#22A06B',
-  red: '#EF5350',
-  violet: '#9B6BEA',
-  pink: '#EC4899',
-  ink: '#5B6472',
+  orange: "#F0932B",
+  blue: "#3B82F6",
+  green: "#22A06B",
+  red: "#EF5350",
+  violet: "#9B6BEA",
+  pink: "#EC4899",
+  ink: "#5B6472",
 } as const;
 
 /* 글 패널 — 하한보다 조금 넓게 열어 둔다. 이보다 좁으면 본문 표가 무너진다 */
@@ -173,16 +180,36 @@ const PANEL_DEFAULT = 440;
   (board.tsx 가 이 파일을 가져간다) 노란 포스트잇 한 벌만 여기 둔다.
 */
 /* 스티커 — FigJam 의 스탬프처럼 «한마디» 를 대신한다 */
-const STICKERS = ['👍', '🔥', '✨', '❤️', '🎯', '⚡', '💡', '❓', '✅', '⚠️', '🙌', '😂'] as const;
+const STICKERS = [
+  "👍",
+  "🔥",
+  "✨",
+  "❤️",
+  "🎯",
+  "⚡",
+  "💡",
+  "❓",
+  "✅",
+  "⚠️",
+  "🙌",
+  "😂",
+] as const;
 
-const PAPERS = ['#FFE9A3', '#FFC9DD', '#B3DCFF', '#B2E5BF', '#DCC9FF', '#FFD1A8'] as const;
-const PAPER_INK = '#232629';
+const PAPERS = [
+  "#FFE9A3",
+  "#FFC9DD",
+  "#B3DCFF",
+  "#B2E5BF",
+  "#DCC9FF",
+  "#FFD1A8",
+] as const;
+const PAPER_INK = "#232629";
 
 /* 격자 한 칸과 점 반지름 (판 좌표 기준 — 화면에서는 배율만큼 커진다) */
 const GRID = 22;
 const GRID_DOT = 1.1;
 
-export type Corner = 'nw' | 'ne' | 'sw' | 'se';
+export type Corner = "nw" | "ne" | "sw" | "se";
 
 /** 되돌리기 한 벌 — 판에서 «바뀌는 것» 전부 */
 interface Snapshot {
@@ -211,11 +238,17 @@ function cursor(body: string): string {
 
 const CURSOR = {
   /* ↖↘ */
-  nwse: cursor("<path d='M5.5 5.5 L16.5 16.5'/><path d='M5.5 10.8 V5.5 H10.8'/><path d='M16.5 11.2 V16.5 H11.2'/>"),
+  nwse: cursor(
+    "<path d='M5.5 5.5 L16.5 16.5'/><path d='M5.5 10.8 V5.5 H10.8'/><path d='M16.5 11.2 V16.5 H11.2'/>",
+  ),
   /* ↗↙ */
-  nesw: cursor("<path d='M16.5 5.5 L5.5 16.5'/><path d='M11.2 5.5 H16.5 V10.8'/><path d='M10.8 16.5 H5.5 V11.2'/>"),
+  nesw: cursor(
+    "<path d='M16.5 5.5 L5.5 16.5'/><path d='M11.2 5.5 H16.5 V10.8'/><path d='M10.8 16.5 H5.5 V11.2'/>",
+  ),
   /* 굽은 화살표 */
-  spin: cursor("<path d='M4.8 13.4a7 7 0 1 0 1.4-6.2'/><path d='M3.1 4.3 V8.9 H7.7'/>"),
+  spin: cursor(
+    "<path d='M4.8 13.4a7 7 0 1 0 1.4-6.2'/><path d='M3.1 4.3 V8.9 H7.7'/>",
+  ),
 } as const;
 
 /*
@@ -225,7 +258,7 @@ const CURSOR = {
   (마커 획 · 포스트잇 · 스티커)과 한눈에 갈린다. 회색으로 두면 조각의
   테두리·그림자와 섞여 무엇이 구조인지 흐려진다.
 */
-const SYSTEM = '#2C8CF5';
+const SYSTEM = "#2C8CF5";
 const LINE = SYSTEM;
 
 /* 스티커 한 변 — 상자와 글리프를 같은 크기로 둔다 */
@@ -249,9 +282,14 @@ export interface BoardProps {
   height?: string | number;
 }
 
-export function Board({ children, proseClassName = '', width = 1200, height = 900 }: BoardProps) {
-  const baseW = typeof width === 'string' ? parseFloat(width) : width;
-  const baseH = typeof height === 'string' ? parseFloat(height) : height;
+export function Board({
+  children,
+  proseClassName = "",
+  width = 1200,
+  height = 900,
+}: BoardProps) {
+  const baseW = typeof width === "string" ? parseFloat(width) : width;
+  const baseH = typeof height === "string" ? parseFloat(height) : height;
 
   const [positions, setPositions] = useState<Record<string, Point>>({});
   const [sizes, setSizes] = useState<Record<string, Size>>({});
@@ -269,7 +307,9 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
   const stampFnRef = useRef<((x: number, y: number) => void) | null>(null);
   const [view, setView] = useState({ x: 0, y: 0, z: 1 });
   const [marquee, setMarquee] = useState<{ a: Point; b: Point } | null>(null);
-  const [panels, setPanels] = useState<{ id: string; title: string; node: ReactNode }[]>([]);
+  const [panels, setPanels] = useState<
+    { id: string; title: string; node: ReactNode }[]
+  >([]);
   const [active, setActive] = useState<string | null>(null);
   const [touched, setTouched] = useState(false);
   const touchedRef = useRef(false);
@@ -278,7 +318,7 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
   const [panelW, setPanelW] = useState(PANEL_DEFAULT);
   const [wide, setWide] = useState(false);
   const [resizing, setResizing] = useState(false);
-  const [tool, setTool] = useState<'select' | 'pen' | 'sticker'>('select');
+  const [tool, setTool] = useState<"select" | "pen" | "sticker">("select");
   /* 손에 쥔 스탬프 — 고르면 커서에 물리고, 누르는 자리마다 계속 찍힌다 */
   const [stamp, setStamp] = useState<string | null>(null);
   const [stampAt, setStampAt] = useState<Point | null>(null);
@@ -292,9 +332,9 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
     여전히 찍히는» 일이 생긴다. 손에 쥔 것을 내려놓는 일까지 여기서 함께
     한다 — Esc 로만 벗어나지는 건 도구 막대를 못 믿게 만든다.
   */
-  const chooseTool = useCallback((t: 'select' | 'pen' | 'sticker') => {
+  const chooseTool = useCallback((t: "select" | "pen" | "sticker") => {
     setTool(t);
-    if (t !== 'sticker') {
+    if (t !== "sticker") {
       setStamp(null);
       setStampAt(null);
     }
@@ -317,7 +357,7 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
     editingRef.current = null;
     setEditing(null);
     /* 빈 채로 둔 쪽지는 «붙이지 않은 것» 으로 본다 */
-    setNotes((all) => all.filter((x) => x.id !== cur || (x.text ?? '').trim()));
+    setNotes((all) => all.filter((x) => x.id !== cur || (x.text ?? "").trim()));
   }, []);
   const noteSeq = useRef(0);
   const inkSeq = useRef(0);
@@ -348,19 +388,19 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
         어디서 시작됐는지에 좌우되지 않는다.
       */
       const under = document.elementFromPoint(e.clientX, e.clientY);
-      setOverChrome(Boolean(under?.closest('[data-board-chrome]')));
+      setOverChrome(Boolean(under?.closest("[data-board-chrome]")));
     };
-    window.addEventListener('pointermove', move);
-    return () => window.removeEventListener('pointermove', move);
+    window.addEventListener("pointermove", move);
+    return () => window.removeEventListener("pointermove", move);
   }, [stamp]);
 
   /* 좌우로 나뉘는 폭에서만 패널 크기를 조절한다 — 위아래로 쌓이면 폭이 곧 화면이다 */
   useEffect(() => {
-    const mq = window.matchMedia('(min-width: 1024px)');
+    const mq = window.matchMedia("(min-width: 1024px)");
     const sync = () => setWide(mq.matches);
     sync();
-    mq.addEventListener('change', sync);
-    return () => mq.removeEventListener('change', sync);
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
   }, []);
 
   const beginPanelResize = (e: ReactPointerEvent) => {
@@ -372,15 +412,15 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
     const onMove = (ev: PointerEvent) =>
       setPanelW(Math.max(PANEL_MIN, Math.min(max, start - (ev.clientX - sx))));
     const onUp = () => {
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerup', onUp);
-      document.body.style.cursor = '';
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      document.body.style.cursor = "";
       setResizing(false);
     };
     setResizing(true);
-    document.body.style.cursor = 'col-resize';
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerup', onUp);
+    document.body.style.cursor = "col-resize";
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
   };
 
   /* 스페이스를 누르고 있는 동안만 «판 끌기» 로 바뀐다 (피그마·피그잼과 같게) */
@@ -421,7 +461,7 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
       ...n,
       {
         id: `sticker-${seq + 1}`,
-        kind: 'sticker' as const,
+        kind: "sticker" as const,
         glyph: stamp,
         /*
           반듯하게만 찍히면 «붙인 것» 이 아니라 «놓인 것» 처럼 보인다.
@@ -440,14 +480,14 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
 
   /* 빈 곳을 두 번 누르면 그 자리에 쪽지가 붙는다 — 막대에 버튼을 늘리지 않는다 */
   const onCanvasDoubleClick = (e: ReactMouseEvent) => {
-    if (tool !== 'select') return;
+    if (tool !== "select") return;
     /*
       조각을 두 번 누른 것까지 «빈 곳» 으로 볼 수는 없다. dblclick 은
       아이템의 pointerdown 이 막아도 그대로 올라오므로 여기서 걸러낸다.
       뭔가 골라 둔 상태에서도 만들지 않는다 — 다루던 것이 있다는 뜻이다.
     */
     if (selectedRef.current.size > 0) return;
-    if ((e.target as HTMLElement)?.closest('[data-board-item]')) return;
+    if ((e.target as HTMLElement)?.closest("[data-board-item]")) return;
     const el = viewport.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
@@ -459,11 +499,15 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
       ...n,
       {
         id,
-        kind: 'note' as const,
+        kind: "note" as const,
         /* 누른 지점이 쪽지의 «가운데» 로 오게 반 칸 당긴다 */
-        x: Math.round((e.clientX - rect.left - viewRef.current.x) / viewRef.current.z - 100),
-        y: Math.round((e.clientY - rect.top - viewRef.current.y) / viewRef.current.z - 44),
-        text: '',
+        x: Math.round(
+          (e.clientX - rect.left - viewRef.current.x) / viewRef.current.z - 100,
+        ),
+        y: Math.round(
+          (e.clientY - rect.top - viewRef.current.y) / viewRef.current.z - 44,
+        ),
+        text: "",
         /* 붙일 때마다 색이 한 칸씩 넘어간다 — 여러 장 붙여도 구분된다 */
         color: PAPERS[seq % PAPERS.length],
       },
@@ -504,7 +548,11 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
     setView((v) => {
       /* 손으로 배율을 만진 적이 없으면 1 을 넘겨 키우지 않는다 */
       const cap = zoomedByHand.current ? MAX_ZOOM : 1;
-      return { z: Math.min(cap, clampZoom(v.z * ratio)), x: v.x * ratio, y: v.y };
+      return {
+        z: Math.min(cap, clampZoom(v.z * ratio)),
+        x: v.x * ratio,
+        y: v.y,
+      };
     });
     home.current = fitNow(el);
   }, [fitNow]);
@@ -544,7 +592,9 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
 
   const reportSize = useCallback((id: string, size: Size) => {
     setSizes((s) =>
-      s[id] && s[id].w === size.w && s[id].h === size.h ? s : { ...s, [id]: size },
+      s[id] && s[id].w === size.w && s[id].h === size.h
+        ? s
+        : { ...s, [id]: size },
     );
   }, []);
 
@@ -561,12 +611,19 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
   const registerInk = useCallback((stroke: Stroke) => {
     if (seedInk.current[stroke.id]) return;
     seedInk.current[stroke.id] = stroke;
-    setStrokes((prev) => (prev.some((x) => x.id === stroke.id) ? prev : [...prev, stroke]));
+    setStrokes((prev) =>
+      prev.some((x) => x.id === stroke.id) ? prev : [...prev, stroke],
+    );
   }, []);
 
-  const registerPanel = useCallback((id: string, title: string, node: ReactNode) => {
-    setPanels((p) => (p.some((x) => x.id === id) ? p : [...p, { id, title, node }]));
-  }, []);
+  const registerPanel = useCallback(
+    (id: string, title: string, node: ReactNode) => {
+      setPanels((p) =>
+        p.some((x) => x.id === id) ? p : [...p, { id, title, node }],
+      );
+    },
+    [],
+  );
 
   /*
     조각을 누르면 오른쪽 글에서 그 대목으로 데려간다.
@@ -594,7 +651,10 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
       0,
       Math.min(
         box.scrollHeight - box.clientHeight,
-        el.getBoundingClientRect().top - box.getBoundingClientRect().top + from - 12,
+        el.getBoundingClientRect().top -
+          box.getBoundingClientRect().top +
+          from -
+          12,
       ),
     );
     if (Math.abs(to - from) < 2) return;
@@ -773,7 +833,8 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
   );
 
   const targetsOf = useCallback(
-    (id: string) => (selectedRef.current.has(id) ? [...selectedRef.current] : [id]),
+    (id: string) =>
+      selectedRef.current.has(id) ? [...selectedRef.current] : [id],
     [],
   );
 
@@ -791,8 +852,8 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
       const x1 = Math.max(...boxes.map((b) => b.x + b.w));
       const y1 = Math.max(...boxes.map((b) => b.y + b.h));
       const anchor = {
-        x: corner === 'nw' || corner === 'sw' ? x1 : x0,
-        y: corner === 'nw' || corner === 'ne' ? y1 : y0,
+        x: corner === "nw" || corner === "sw" ? x1 : x0,
+        y: corner === "nw" || corner === "ne" ? y1 : y0,
       };
 
       const el = viewport.current;
@@ -810,7 +871,10 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
 
       const onMove = (ev: PointerEvent) => {
         const p = toCanvas(ev.clientX, ev.clientY);
-        const f = Math.min(fMax, Math.max(fMin, Math.hypot(p.x - anchor.x, p.y - anchor.y) / d0));
+        const f = Math.min(
+          fMax,
+          Math.max(fMin, Math.hypot(p.x - anchor.x, p.y - anchor.y) / d0),
+        );
         setScales((m) => {
           const next = { ...m };
           for (const b of boxes) next[b.id] = Math.round(b.k * f * 1000) / 1000;
@@ -822,8 +886,12 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
             const k2 = b.k * f;
             /* 보이는 자리를 정한 뒤, 가운데 기준점을 감안해 좌표로 되돌린다 */
             next[b.id] = {
-              x: Math.round(anchor.x + (b.x - anchor.x) * f + (b.lw * (k2 - 1)) / 2),
-              y: Math.round(anchor.y + (b.y - anchor.y) * f + (b.lh * (k2 - 1)) / 2),
+              x: Math.round(
+                anchor.x + (b.x - anchor.x) * f + (b.lw * (k2 - 1)) / 2,
+              ),
+              y: Math.round(
+                anchor.y + (b.y - anchor.y) * f + (b.lh * (k2 - 1)) / 2,
+              ),
             };
           }
           return next;
@@ -831,11 +899,11 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
         markTouched();
       };
       const onUp = () => {
-        window.removeEventListener('pointermove', onMove);
-        window.removeEventListener('pointerup', onUp);
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
       };
-      window.addEventListener('pointermove', onMove);
-      window.addEventListener('pointerup', onUp);
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
     },
     [boxesOf, targetsOf, mark],
   );
@@ -875,7 +943,8 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
 
         setSpins((m) => {
           const next = { ...m };
-          for (const b of boxes) next[b.id] = Math.round((b.spin + d) * 10) / 10;
+          for (const b of boxes)
+            next[b.id] = Math.round((b.spin + d) * 10) / 10;
           return next;
         });
         /* 여럿이면 각자 제자리에서만 도는 게 아니라 «무리째» 돌아야 한다 */
@@ -897,18 +966,21 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
         markTouched();
       };
       const onUp = () => {
-        window.removeEventListener('pointermove', onMove);
-        window.removeEventListener('pointerup', onUp);
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
       };
-      window.addEventListener('pointermove', onMove);
-      window.addEventListener('pointerup', onUp);
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
     },
     [boxesOf, targetsOf, mark],
   );
 
   const isSelected = useCallback((id: string) => selected.has(id), [selected]);
   const isDenied = useCallback((id: string) => denied.has(id), [denied]);
-  const hasPanel = useCallback((id: string) => panels.some((p) => p.id === id), [panels]);
+  const hasPanel = useCallback(
+    (id: string) => panels.some((p) => p.id === id),
+    [panels],
+  );
 
   /* ── 조각 끌기 · 누르기 ──
      3px 안에서 손을 떼면 «누른 것» 으로 본다 — 서랍이 열린다.
@@ -925,7 +997,11 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
 
       let group: string[] = [id];
       setSelected((prev) => {
-        const next = additive ? new Set(prev) : prev.has(id) ? new Set(prev) : new Set<string>();
+        const next = additive
+          ? new Set(prev)
+          : prev.has(id)
+            ? new Set(prev)
+            : new Set<string>();
         next.add(id);
         group = [...next];
         return next;
@@ -946,18 +1022,19 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
           const next = { ...p };
           for (const key of group) {
             const o = origin[key];
-            if (o) next[key] = { x: Math.round(o.x + dx), y: Math.round(o.y + dy) };
+            if (o)
+              next[key] = { x: Math.round(o.x + dx), y: Math.round(o.y + dy) };
           }
           return next;
         });
       };
       const onUp = () => {
-        window.removeEventListener('pointermove', onMove);
-        window.removeEventListener('pointerup', onUp);
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
         if (!moved && opens) focusPanel(opens);
       };
-      window.addEventListener('pointermove', onMove);
-      window.addEventListener('pointerup', onUp);
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
     },
     [positions, focusPanel, mark],
   );
@@ -978,7 +1055,7 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
     });
 
     /* 펜 — 판 좌표로 점을 모은다. 확대해도 선 굵기가 판에 붙어 있게 된다 */
-    if (tool === 'pen' && !spaceDown.current) {
+    if (tool === "pen" && !spaceDown.current) {
       mark();
       const pts: Point[] = [toCanvasPt(e.clientX, e.clientY)];
       const color = inkColor;
@@ -994,13 +1071,13 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
         setLive({ id, color, pts: [...pts] });
       };
       const onUp = () => {
-        window.removeEventListener('pointermove', onMove);
-        window.removeEventListener('pointerup', onUp);
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
         setLive(null);
         if (pts.length > 1) setStrokes((s) => [...s, { id, color, pts }]);
       };
-      window.addEventListener('pointermove', onMove);
-      window.addEventListener('pointerup', onUp);
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
       return;
     }
 
@@ -1026,17 +1103,18 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
         for (const [id, p] of Object.entries(positions)) {
           const s = sizes[id];
           if (!s) continue;
-          if (p.x < x2 && p.x + s.w > x1 && p.y < y2 && p.y + s.h > y1) hit.add(id);
+          if (p.x < x2 && p.x + s.w > x1 && p.y < y2 && p.y + s.h > y1)
+            hit.add(id);
         }
         setSelected(hit);
       };
       const onUp = () => {
         setMarquee(null);
-        window.removeEventListener('pointermove', onMove);
-        window.removeEventListener('pointerup', onUp);
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
       };
-      window.addEventListener('pointermove', onMove);
-      window.addEventListener('pointerup', onUp);
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
       return;
     }
 
@@ -1050,11 +1128,11 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
     };
     const onUp = () => {
       setGrabbing(false);
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
     };
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerup', onUp);
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
   };
 
   /* 피그마와 같게 — 휠은 판을 밀고, ⌘/ctrl + 휠은 커서 밑을 중심으로 확대한다.
@@ -1073,24 +1151,28 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
           const cx = e.clientX - rect.left;
           const cy = e.clientY - rect.top;
           /* 커서 밑 지점이 제자리에 남도록 이동량을 보정한다 */
-          return { z, x: cx - ((cx - v.x) / v.z) * z, y: cy - ((cy - v.y) / v.z) * z };
+          return {
+            z,
+            x: cx - ((cx - v.x) / v.z) * z,
+            y: cy - ((cy - v.y) / v.z) * z,
+          };
         }
         return { ...v, x: v.x - e.deltaX, y: v.y - e.deltaY };
       });
     };
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
   }, []);
 
   useEffect(() => {
     const kd = (e: KeyboardEvent) => {
-      if (e.code === 'Space') {
+      if (e.code === "Space") {
         /* 스페이스가 페이지를 스크롤하거나 버튼을 누르지 않게 막는다 */
-        if ((e.target as HTMLElement)?.tagName !== 'BUTTON') e.preventDefault();
+        if ((e.target as HTMLElement)?.tagName !== "BUTTON") e.preventDefault();
         spaceDown.current = true;
         setPanMode(true);
       }
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         /*
           Esc 는 «하던 걸 그만둔다» 하나만 뜻해야 한다. 쥔 스탬프가 있을 때만
           도구가 풀리게 해뒀더니, 스티커를 안 고른 채 스티커 모드에 있거나
@@ -1099,11 +1181,11 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
         */
         setSelected(new Set());
         finishEditing();
-        chooseTool('select');
+        chooseTool("select");
       }
       /* 글자를 치는 중에는 단축키를 잡지 않는다 */
       if ((e.target as HTMLElement)?.isContentEditable) return;
-      if (e.key === 'Backspace' || e.key === 'Delete') {
+      if (e.key === "Backspace" || e.key === "Delete") {
         /*
           지울 대상을 «지금» 붙잡는다. setNotes 의 업데이터는 다음 렌더 때
           실행되는데, 그 렌더에서 selectedRef 는 바로 아래 setSelected 로
@@ -1129,7 +1211,10 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
           /* 안내 문구 대신 몸으로 알려 준다 — 붉어지며 잠깐 떤다 */
           window.clearTimeout(denyTimer.current);
           setDenied(new Set(locked));
-          denyTimer.current = window.setTimeout(() => setDenied(new Set()), 520);
+          denyTimer.current = window.setTimeout(
+            () => setDenied(new Set()),
+            520,
+          );
         }
         /*
           잠긴 조각은 «고른 채» 로 둔다 — 여기서 선택을 풀면 테두리가 같이
@@ -1139,18 +1224,18 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
       }
       /* 입력 중에는 단축키를 잡지 않는다 */
       const tag = (e.target as HTMLElement)?.tagName;
-      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-      if (e.key === 'v' || e.key === 'V') chooseTool('select');
-      if (e.key === 'p' || e.key === 'P') chooseTool('pen');
-      if (e.key === 's' || e.key === 'S') chooseTool('sticker');
-      if ((e.metaKey || e.ctrlKey) && (e.key === 'z' || e.key === 'Z')) {
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      if (e.key === "v" || e.key === "V") chooseTool("select");
+      if (e.key === "p" || e.key === "P") chooseTool("pen");
+      if (e.key === "s" || e.key === "S") chooseTool("sticker");
+      if ((e.metaKey || e.ctrlKey) && (e.key === "z" || e.key === "Z")) {
         e.preventDefault();
         if (e.shiftKey) redo();
         else undo();
       }
     };
     const ku = (e: KeyboardEvent) => {
-      if (e.code === 'Space') {
+      if (e.code === "Space") {
         spaceDown.current = false;
         setPanMode(false);
       }
@@ -1160,13 +1245,13 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
       spaceDown.current = false;
       setPanMode(false);
     };
-    window.addEventListener('keydown', kd);
-    window.addEventListener('keyup', ku);
-    window.addEventListener('blur', blur);
+    window.addEventListener("keydown", kd);
+    window.addEventListener("keyup", ku);
+    window.addEventListener("blur", blur);
     return () => {
-      window.removeEventListener('keydown', kd);
-      window.removeEventListener('keyup', ku);
-      window.removeEventListener('blur', blur);
+      window.removeEventListener("keydown", kd);
+      window.removeEventListener("keyup", ku);
+      window.removeEventListener("blur", blur);
     };
   }, [chooseTool, finishEditing, undo, redo]);
 
@@ -1186,7 +1271,8 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
     Object.values(scales).every((v) => v === 1) &&
     Object.values(spins).every((v) => v === 0) &&
     Object.entries(positions).every(
-      ([id, p]) => initial.current[id]?.x === p.x && initial.current[id]?.y === p.y,
+      ([id, p]) =>
+        initial.current[id]?.x === p.x && initial.current[id]?.y === p.y,
     );
 
   const reset = () => {
@@ -1252,12 +1338,17 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
     ],
   );
 
+  /*
+    글이 한 칸도 없으면 패널을 아예 그리지 않는다. 빈 칸을 띄워 두면 판이
+    거기까지 못 쓰는데 정작 그 자리에는 아무것도 없다 — 판만 쓰는 화면도 있다.
+  */
+  const hasPanels = panels.length > 0;
+
   return (
     /*
       좁으면 위아래로, 넓으면 좌우로 나눈다. 판과 글이 «동시에» 보여야
       조각을 누른 결과가 어디에 나타나는지 알 수 있다.
-    */
-    /*
+
       화면을 통째로 덮지 않는다 — 감싼 자리를 채운다. 그래야 글 한 편에
       전면으로도 쓰고, 쇼룸 안 한 칸으로도 쓴다. 크기는 부모가 정한다.
     */
@@ -1269,15 +1360,15 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
         className="jam-canvas relative min-h-0 flex-1 select-none overflow-hidden"
         style={{
           cursor: grabbing
-            ? 'grabbing'
+            ? "grabbing"
             : panMode
-              ? 'grab'
+              ? "grab"
               : stamp
-                ? 'none'
-                : tool === 'pen'
-                  ? 'crosshair'
-                  : 'default',
-          touchAction: 'none',
+                ? "none"
+                : tool === "pen"
+                  ? "crosshair"
+                  : "default",
+          touchAction: "none",
           /* 격자를 판에 붙인다 — 간격도 점도 같이 커지고, 밀면 같이 흐른다 */
           backgroundImage: `radial-gradient(circle, rgb(var(--color-onsurface) / 0.16) ${(
             GRID_DOT * view.z
@@ -1297,14 +1388,16 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
           <Ctx.Provider value={ctx}>
             {children}
             {selected.size > 1 && (
-            <GroupFrame
-              boxes={boxesOf([...selected])}
-              zoom={view.z}
-              onResize={(corner, e) => beginResize([...selected][0], corner, e)}
-              onRotate={(e) => beginRotate([...selected][0], e)}
-            />
-          )}
-          {strokes.map((st) => (
+              <GroupFrame
+                boxes={boxesOf([...selected])}
+                zoom={view.z}
+                onResize={(corner, e) =>
+                  beginResize([...selected][0], corner, e)
+                }
+                onRotate={(e) => beginRotate([...selected][0], e)}
+              />
+            )}
+            {strokes.map((st) => (
               <InkStroke key={st.id} stroke={st} />
             ))}
             {notes.map((n) => (
@@ -1317,7 +1410,9 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
                   setEditing(n.id);
                 }}
                 onText={(text: string) =>
-                  setNotes((all) => all.map((x) => (x.id === n.id ? { ...x, text } : x)))
+                  setNotes((all) =>
+                    all.map((x) => (x.id === n.id ? { ...x, text } : x)),
+                  )
                 }
                 onDone={finishEditing}
               />
@@ -1326,7 +1421,12 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
 
           <svg
             className="pointer-events-none absolute left-0 top-0"
-            style={{ width: baseW, height: baseH, zIndex: 40, overflow: 'visible' }}
+            style={{
+              width: baseW,
+              height: baseH,
+              zIndex: 40,
+              overflow: "visible",
+            }}
             aria-hidden
           >
             {live && (
@@ -1381,11 +1481,12 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
         )}
       </div>
 
-      <div
-        className="relative flex h-[46%] w-full shrink-0 flex-col lg:h-full"
-        style={wide ? { width: panelW } : undefined}
-      >
-        {/*
+      {hasPanels && (
+        <div
+          className="relative flex h-[46%] w-full shrink-0 flex-col lg:h-full"
+          style={wide ? { width: panelW } : undefined}
+        >
+          {/*
           폭 조절 손잡이.
 
           선은 «하나» 여야 한다 — aside 의 border-l 과 손잡이의 선이 겹치면
@@ -1393,58 +1494,59 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
           잡는 영역은 12px, 보이는 선은 1px — 눈에 거슬리지 않으면서 잡기는
           쉬워야 한다.
         */}
-        {wide && (
-          <div
-            onPointerDown={beginPanelResize}
-            className="group absolute -left-1.5 top-0 z-20 flex h-full w-3 cursor-col-resize touch-none items-center justify-center"
-            role="separator"
-            aria-orientation="vertical"
-            aria-label="글 영역 너비 조절"
-          >
-            <span
-              className={`absolute inset-y-0 left-1/2 -translate-x-1/2 transition-all ${
-                resizing
-                  ? 'w-[2px] bg-sky-500'
-                  : 'w-px bg-outline/60 group-hover:w-[2px] group-hover:bg-sky-500'
-              }`}
-            />
-            <span
-              className={`relative rounded-full transition-all ${
-                resizing
-                  ? 'h-14 w-[5px] bg-sky-500'
-                  : 'h-10 w-[4px] bg-onsurface/25 group-hover:h-14 group-hover:w-[5px] group-hover:bg-sky-500'
-              }`}
-            />
-          </div>
-        )}
+          {wide && (
+            <div
+              onPointerDown={beginPanelResize}
+              className="group absolute -left-1.5 top-0 z-20 flex h-full w-3 cursor-col-resize touch-none items-center justify-center"
+              role="separator"
+              aria-orientation="vertical"
+              aria-label="글 영역 너비 조절"
+            >
+              <span
+                className={`absolute inset-y-0 left-1/2 -translate-x-1/2 transition-all ${
+                  resizing
+                    ? "w-[2px] bg-sky-500"
+                    : "w-px bg-outline/60 group-hover:w-[2px] group-hover:bg-sky-500"
+                }`}
+              />
+              <span
+                className={`relative rounded-full transition-all ${
+                  resizing
+                    ? "h-14 w-[5px] bg-sky-500"
+                    : "h-10 w-[4px] bg-onsurface/25 group-hover:h-14 group-hover:w-[5px] group-hover:bg-sky-500"
+                }`}
+              />
+            </div>
+          )}
 
-        <aside
-          ref={panelScroll}
-          /*
+          <aside
+            ref={panelScroll}
+            /*
             소비처의 본문 조판을 패널 «전체» 에 걸면 그 규칙(h2 여백·윗줄 따위)이
             이 목록의 절 제목까지 잡아먹어 정체 모를 빈 띠가 생긴다.
             조판은 글 «안쪽» 에만 건다.
           */
-          className="jam-panel min-h-0 flex-1 overflow-y-auto border-t border-outline/25 bg-surface px-5 pb-24 pt-6 lg:border-t-0 lg:px-6"
-        >
-          {panels.map(({ id, title, node }) => (
-            <section
-              key={id}
-              ref={(el) => {
-                sectionRefs.current[id] = el;
-              }}
-              className={`scroll-mt-4 border-t border-outline/20 pb-7 pt-7 first:border-t-0 first:pt-0 ${
-                active === id ? 'jam-panel-on' : ''
-              }`}
-            >
-              <h2 className="m-0 mb-3.5 text-[18px] font-bold leading-snug tracking-[-0.02em] [word-break:keep-all]">
-                {title}
-              </h2>
-              <div className={proseClassName}>{node}</div>
-            </section>
-          ))}
-        </aside>
-      </div>
+            className="jam-panel min-h-0 flex-1 overflow-y-auto border-t border-outline/25 bg-surface px-5 pb-24 pt-6 lg:border-t-0 lg:px-6"
+          >
+            {panels.map(({ id, title, node }) => (
+              <section
+                key={id}
+                ref={(el) => {
+                  sectionRefs.current[id] = el;
+                }}
+                className={`scroll-mt-4 border-t border-outline/20 pb-7 pt-7 first:border-t-0 first:pt-0 ${
+                  active === id ? "jam-panel-on" : ""
+                }`}
+              >
+                <h2 className="m-0 mb-3.5 text-[18px] font-bold leading-snug tracking-[-0.02em] [word-break:keep-all]">
+                  {title}
+                </h2>
+                <div className={proseClassName}>{node}</div>
+              </section>
+            ))}
+          </aside>
+        </div>
+      )}
     </div>
   );
 }
@@ -1455,31 +1557,35 @@ export function Board({ children, proseClassName = '', width = 1200, height = 90
    ──────────────────────────────────────────────────────────── */
 
 /* 16px 선 아이콘 — 글리프(⬚ ✎)는 폰트마다 크기·정렬이 달라 막대가 지저분해진다 */
-function Icon({ name }: { name: 'cursor' | 'pen' | 'undo' | 'redo' | 'reset' | 'sticker' }) {
+function Icon({
+  name,
+}: {
+  name: "cursor" | "pen" | "undo" | "redo" | "reset" | "sticker";
+}) {
   const common = {
     width: 16,
     height: 16,
-    viewBox: '0 0 16 16',
-    fill: 'none',
-    stroke: 'currentColor',
+    viewBox: "0 0 16 16",
+    fill: "none",
+    stroke: "currentColor",
     strokeWidth: 1.6,
-    strokeLinecap: 'round' as const,
-    strokeLinejoin: 'round' as const,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
   };
-  if (name === 'cursor')
+  if (name === "cursor")
     return (
       <svg {...common} aria-hidden>
         <path d="M3 2.2l9.2 5.3-4 .9-1.6 3.9z" />
       </svg>
     );
-  if (name === 'pen')
+  if (name === "pen")
     return (
       <svg {...common} aria-hidden>
         <path d="M11.6 2.6l1.8 1.8-7.7 7.7-2.5.7.7-2.5z" />
         <path d="M10.3 3.9l1.8 1.8" />
       </svg>
     );
-  if (name === 'sticker')
+  if (name === "sticker")
     return (
       <svg {...common} aria-hidden>
         <path d="M13.4 8A5.4 5.4 0 118 2.6" />
@@ -1487,14 +1593,14 @@ function Icon({ name }: { name: 'cursor' | 'pen' | 'undo' | 'redo' | 'reset' | '
         <path d="M10.6 2.9v2.5h2.5" />
       </svg>
     );
-  if (name === 'undo')
+  if (name === "undo")
     return (
       <svg {...common} aria-hidden>
         <path d="M3 7.2h6.3a3.4 3.4 0 010 6.8H6.5" />
         <path d="M5.4 4.4L2.6 7.2l2.8 2.8" />
       </svg>
     );
-  if (name === 'redo')
+  if (name === "redo")
     return (
       <svg {...common} aria-hidden>
         <path d="M13 7.2H6.7a3.4 3.4 0 100 6.8h2.8" />
@@ -1525,12 +1631,12 @@ function Toolbar({
   onReset,
 }: {
   touched: boolean;
-  tool: 'select' | 'pen' | 'sticker';
+  tool: "select" | "pen" | "sticker";
   inkColor: string;
   canUndo: boolean;
   canRedo: boolean;
   onRedo: () => void;
-  onTool: (t: 'select' | 'pen' | 'sticker') => void;
+  onTool: (t: "select" | "pen" | "sticker") => void;
   /* 지금 쥐고 있는 스탬프 */
   stamp: string | null;
   onSticker: (glyph: string) => void;
@@ -1541,14 +1647,14 @@ function Toolbar({
   const { backHref, backLabel } = useContext(ChromeCtx);
 
   const ghost =
-    'grid h-8 w-8 place-items-center rounded-lg text-onsurface/60 transition-colors hover:bg-onsurface/10 hover:text-onsurface disabled:opacity-30 disabled:hover:bg-transparent';
+    "grid h-8 w-8 place-items-center rounded-lg text-onsurface/60 transition-colors hover:bg-onsurface/10 hover:text-onsurface disabled:opacity-30 disabled:hover:bg-transparent";
   const tab = (on: boolean) =>
     `grid h-8 w-8 place-items-center rounded-lg transition-colors ${
       on
-        ? 'bg-onsurface text-surface'
-        : 'text-onsurface/60 hover:bg-onsurface/10 hover:text-onsurface'
+        ? "bg-onsurface text-surface"
+        : "text-onsurface/60 hover:bg-onsurface/10 hover:text-onsurface"
     }`;
-  const bar = 'mx-1 h-5 w-px shrink-0 bg-outline/35';
+  const bar = "mx-1 h-5 w-px shrink-0 bg-outline/35";
 
   return (
     <div
@@ -1559,7 +1665,7 @@ function Toolbar({
         스탬프를 쥐면 캔버스 커서를 감추는데(그 자리에 이모지가 떠 있으므로),
         막대 위에서까지 커서가 없으면 버튼을 겨냥하기 어렵다. 여기서는 되살린다.
       */
-      style={{ cursor: 'default' }}
+      style={{ cursor: "default" }}
     >
       {backHref && (
         <>
@@ -1573,22 +1679,32 @@ function Toolbar({
         </>
       )}
 
-      <button type="button" className={tab(tool === 'select')} onClick={() => onTool('select')} title="선택 (V)">
+      <button
+        type="button"
+        className={tab(tool === "select")}
+        onClick={() => onTool("select")}
+        title="선택 (V)"
+      >
         <Icon name="cursor" />
       </button>
-      <button type="button" className={tab(tool === 'pen')} onClick={() => onTool('pen')} title="펜 (P)">
+      <button
+        type="button"
+        className={tab(tool === "pen")}
+        onClick={() => onTool("pen")}
+        title="펜 (P)"
+      >
         <Icon name="pen" />
       </button>
       <button
         type="button"
-        className={tab(tool === 'sticker')}
-        onClick={() => onTool(tool === 'sticker' ? 'select' : 'sticker')}
+        className={tab(tool === "sticker")}
+        onClick={() => onTool(tool === "sticker" ? "select" : "sticker")}
         title="스티커 (S)"
       >
         <Icon name="sticker" />
       </button>
 
-      {tool === 'sticker' && (
+      {tool === "sticker" && (
         <>
           <span className={bar} />
           {STICKERS.map((g) => (
@@ -1598,7 +1714,7 @@ function Toolbar({
               onClick={() => onSticker(g)}
               title={`${g} 붙이기`}
               className={`grid h-8 w-8 place-items-center rounded-lg text-[17px] leading-none transition-transform hover:scale-125 ${
-                stamp === g ? 'scale-125 bg-onsurface/10' : ''
+                stamp === g ? "scale-125 bg-onsurface/10" : ""
               }`}
             >
               {g}
@@ -1607,7 +1723,7 @@ function Toolbar({
         </>
       )}
 
-      {tool === 'pen' && (
+      {tool === "pen" && (
         <>
           <span className={bar} />
           {INKS.map((c) => (
@@ -1620,7 +1736,9 @@ function Toolbar({
             >
               <span
                 className={`block rounded-full transition-all ${
-                  inkColor === c ? 'h-[18px] w-[18px] ring-2 ring-onsurface/40 ring-offset-2 ring-offset-surface' : 'h-[15px] w-[15px]'
+                  inkColor === c
+                    ? "h-[18px] w-[18px] ring-2 ring-onsurface/40 ring-offset-2 ring-offset-surface"
+                    : "h-[15px] w-[15px]"
                 }`}
                 style={{ background: c }}
               />
@@ -1630,13 +1748,31 @@ function Toolbar({
       )}
 
       <span className={bar} />
-      <button type="button" className={ghost} onClick={onUndo} disabled={!canUndo} title="되돌리기 (⌘Z)">
+      <button
+        type="button"
+        className={ghost}
+        onClick={onUndo}
+        disabled={!canUndo}
+        title="되돌리기 (⌘Z)"
+      >
         <Icon name="undo" />
       </button>
-      <button type="button" className={ghost} onClick={onRedo} disabled={!canRedo} title="다시 하기 (⇧⌘Z)">
+      <button
+        type="button"
+        className={ghost}
+        onClick={onRedo}
+        disabled={!canRedo}
+        title="다시 하기 (⇧⌘Z)"
+      >
         <Icon name="redo" />
       </button>
-      <button type="button" className={ghost} onClick={onReset} disabled={!touched} title="처음 배치로">
+      <button
+        type="button"
+        className={ghost}
+        onClick={onReset}
+        disabled={!touched}
+        title="처음 배치로"
+      >
         <Icon name="reset" />
       </button>
     </div>
@@ -1718,7 +1854,8 @@ export function Item({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const measure = () => reportSize(id, { w: el.offsetWidth, h: el.offsetHeight });
+    const measure = () =>
+      reportSize(id, { w: el.offsetWidth, h: el.offsetHeight });
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(el);
@@ -1730,7 +1867,7 @@ export function Item({
   const nope = isDenied(id);
   const readable = Boolean(opens) && hasPanel(opens!);
   /* 펜을 들면 조각은 비켜선다 — 그리다가 조각이 딸려오면 낙서가 안 된다 */
-  const pen = tool === 'pen';
+  const pen = tool === "pen";
 
   const sc = scaleOf(id);
   const spin = spinOf(id);
@@ -1747,10 +1884,26 @@ export function Item({
   const KNOB = 14;
   const off = -(RING - EDGE / 2 + KNOB / 2);
   const HANDLES = [
-    { k: 'nw' as const, at: { left: off * inv, top: off * inv }, cursor: CURSOR.nwse },
-    { k: 'ne' as const, at: { right: off * inv, top: off * inv }, cursor: CURSOR.nesw },
-    { k: 'sw' as const, at: { left: off * inv, bottom: off * inv }, cursor: CURSOR.nesw },
-    { k: 'se' as const, at: { right: off * inv, bottom: off * inv }, cursor: CURSOR.nwse },
+    {
+      k: "nw" as const,
+      at: { left: off * inv, top: off * inv },
+      cursor: CURSOR.nwse,
+    },
+    {
+      k: "ne" as const,
+      at: { right: off * inv, top: off * inv },
+      cursor: CURSOR.nesw,
+    },
+    {
+      k: "sw" as const,
+      at: { left: off * inv, bottom: off * inv },
+      cursor: CURSOR.nesw,
+    },
+    {
+      k: "se" as const,
+      at: { right: off * inv, bottom: off * inv },
+      cursor: CURSOR.nwse,
+    },
   ];
 
   /*
@@ -1766,18 +1919,18 @@ export function Item({
       ref={ref}
       onPointerDown={(e) => beginDrag(id, e, readable ? opens : undefined)}
       data-board-item=""
-      className={`group absolute ${readable ? 'cursor-pointer' : 'cursor-grab'} active:cursor-grabbing ${className ?? ''}`}
+      className={`group absolute ${readable ? "cursor-pointer" : "cursor-grab"} active:cursor-grabbing ${className ?? ""}`}
       style={{
         left: p.x,
         top: p.y,
         zIndex: on ? 30 : (z ?? 10),
-        touchAction: 'none',
+        touchAction: "none",
         ...(sc !== 1 ? { scale: String(sc) } : null),
         /* 원래 기울기와 손으로 돌린 각을 «더해서» 쓴다 — 흔들림 애니메이션도 같은 식을 쓴다 */
-        ['--spin' as string]: `${spin}deg`,
-        rotate: 'calc(var(--tilt, 0deg) + var(--spin, 0deg))',
-        ...(nope ? { animation: 'jam-deny 0.5s ease-in-out' } : null),
-        pointerEvents: pen ? 'none' : undefined,
+        ["--spin" as string]: `${spin}deg`,
+        rotate: "calc(var(--tilt, 0deg) + var(--spin, 0deg))",
+        ...(nope ? { animation: "jam-deny 0.5s ease-in-out" } : null),
+        pointerEvents: pen ? "none" : undefined,
         ...style,
       }}
     >
@@ -1794,7 +1947,7 @@ export function Item({
         <>
           <span
             aria-hidden
-            className={`pointer-events-none absolute ${nope ? 'border-[#E4483F]' : 'border-[#2C8CF5]'}`}
+            className={`pointer-events-none absolute ${nope ? "border-[#E4483F]" : "border-[#2C8CF5]"}`}
             style={{
               inset: -RING * inv,
               borderWidth: EDGE * inv,
@@ -1809,8 +1962,12 @@ export function Item({
               onPointerDown={(e) => beginRotate(id, e)}
               className="pointer-events-auto absolute"
               style={{
-                ...(h.at.left !== undefined ? { left: spinOff * inv } : { right: spinOff * inv }),
-                ...(h.at.top !== undefined ? { top: spinOff * inv } : { bottom: spinOff * inv }),
+                ...(h.at.left !== undefined
+                  ? { left: spinOff * inv }
+                  : { right: spinOff * inv }),
+                ...(h.at.top !== undefined
+                  ? { top: spinOff * inv }
+                  : { bottom: spinOff * inv }),
                 width: SPIN_PAD * inv,
                 height: SPIN_PAD * inv,
                 cursor: CURSOR.spin,
@@ -1821,7 +1978,7 @@ export function Item({
             <span
               key={h.k}
               onPointerDown={(e) => beginResize(id, h.k, e)}
-              className={`pointer-events-auto absolute bg-surface shadow-sm ${nope ? 'border-[#E4483F]' : 'border-[#2C8CF5]'}`}
+              className={`pointer-events-auto absolute bg-surface shadow-sm ${nope ? "border-[#E4483F]" : "border-[#2C8CF5]"}`}
               style={{
                 ...h.at,
                 cursor: h.cursor,
@@ -1863,7 +2020,7 @@ function UserSticky({
     if (!editing) return;
     const el = box.current;
     if (!el) return;
-    el.textContent = note.text ?? '';
+    el.textContent = note.text ?? "";
     el.focus();
     /* 커서를 글 끝에 둔다 — 빈 쪽지면 그냥 처음이다 */
     const range = document.createRange();
@@ -1875,7 +2032,7 @@ function UserSticky({
     /* eslint-disable-next-line react-hooks/exhaustive-deps -- 편집이 시작될 때만 */
   }, [editing]);
 
-  if (note.kind === 'sticker') {
+  if (note.kind === "sticker") {
     return (
       <Item
         id={note.id}
@@ -1888,8 +2045,8 @@ function UserSticky({
           height: STICKER,
           fontSize: STICKER,
           lineHeight: 1,
-          ['--tilt' as string]: `${note.tilt ?? 0}deg`,
-          filter: 'drop-shadow(0 4px 6px rgb(0 0 0 / 0.25))',
+          ["--tilt" as string]: `${note.tilt ?? 0}deg`,
+          filter: "drop-shadow(0 4px 6px rgb(0 0 0 / 0.25))",
         }}
       >
         <span className="select-none">{note.glyph}</span>
@@ -1907,8 +2064,9 @@ function UserSticky({
         background: note.color,
         color: PAPER_INK,
         /* 원래 기울기는 변수로만 알려 준다 — 손으로 돌린 각과 합치는 일은 Item 이 한다 */
-        ['--tilt' as string]: '-1deg',
-        boxShadow: '0 6px 14px -6px rgb(0 0 0 / 0.35), 0 1px 2px rgb(0 0 0 / 0.15)',
+        ["--tilt" as string]: "-1deg",
+        boxShadow:
+          "0 6px 14px -6px rgb(0 0 0 / 0.35), 0 1px 2px rgb(0 0 0 / 0.15)",
       }}
     >
       <div
@@ -1923,10 +2081,10 @@ function UserSticky({
         onPointerDown={(e) => {
           if (editing) e.stopPropagation();
         }}
-        onInput={(e) => onText(e.currentTarget.textContent ?? '')}
+        onInput={(e) => onText(e.currentTarget.textContent ?? "")}
         onBlur={onDone}
         onKeyDown={(e) => {
-          if (e.key === 'Escape' || (e.key === 'Enter' && !e.shiftKey)) {
+          if (e.key === "Escape" || (e.key === "Enter" && !e.shiftKey)) {
             e.preventDefault();
             onDone();
           }
@@ -1975,10 +2133,30 @@ function GroupFrame({
   const SPIN_PAD = 26;
   const spinOff = -(RING + SPIN_PAD / 2 + 1);
   const corners = [
-    { k: 'nw' as const, x: 'left' as const, y: 'top' as const, cursor: CURSOR.nwse },
-    { k: 'ne' as const, x: 'right' as const, y: 'top' as const, cursor: CURSOR.nesw },
-    { k: 'sw' as const, x: 'left' as const, y: 'bottom' as const, cursor: CURSOR.nesw },
-    { k: 'se' as const, x: 'right' as const, y: 'bottom' as const, cursor: CURSOR.nwse },
+    {
+      k: "nw" as const,
+      x: "left" as const,
+      y: "top" as const,
+      cursor: CURSOR.nwse,
+    },
+    {
+      k: "ne" as const,
+      x: "right" as const,
+      y: "top" as const,
+      cursor: CURSOR.nesw,
+    },
+    {
+      k: "sw" as const,
+      x: "left" as const,
+      y: "bottom" as const,
+      cursor: CURSOR.nesw,
+    },
+    {
+      k: "se" as const,
+      x: "right" as const,
+      y: "bottom" as const,
+      cursor: CURSOR.nwse,
+    },
   ];
 
   return (
@@ -2037,58 +2215,63 @@ function GroupFrame({
 /** 이름에서 «항상 같은» 흔들림을 뽑는다 — 손그림처럼 보이되 매번 같아야 한다 */
 function wobble(seed: string, i: number, amp: number): number {
   let h = Math.imul(seed.length + i * 31 + 7, 2654435761) >>> 0;
-  for (let k = 0; k < seed.length; k++) h = Math.imul(h ^ seed.charCodeAt(k), 16777619) >>> 0;
+  for (let k = 0; k < seed.length; k++)
+    h = Math.imul(h ^ seed.charCodeAt(k), 16777619) >>> 0;
   return ((h % 200) / 100 - 1) * amp;
 }
 
-const SHAPES: Record<string, (w: number, h: number, seed: string) => Point[]> = {
-  /* 강조 밑줄 — 한 번에 그은 듯 끝이 살짝 올라간다 */
-  underline: (w, h, seed) =>
-    Array.from({ length: 14 }, (_, i) => {
-      const t = i / 13;
-      return {
-        x: t * w,
-        y: h / 2 + Math.sin(t * Math.PI) * -h * 0.28 + wobble(seed, i, 1.6),
-      };
-    }),
-  /* 동그라미 — 한 바퀴를 조금 넘겨 겹치게 그린다 */
-  circle: (w, h, seed) =>
-    Array.from({ length: 30 }, (_, i) => {
-      const t = (i / 29) * Math.PI * 2.15 - Math.PI * 0.55;
-      return {
-        x: w / 2 + Math.cos(t) * (w / 2) + wobble(seed, i, 2.2),
-        y: h / 2 + Math.sin(t) * (h / 2) + wobble(seed, i + 40, 2.2),
-      };
-    }),
-  /*
+const SHAPES: Record<string, (w: number, h: number, seed: string) => Point[]> =
+  {
+    /* 강조 밑줄 — 한 번에 그은 듯 끝이 살짝 올라간다 */
+    underline: (w, h, seed) =>
+      Array.from({ length: 14 }, (_, i) => {
+        const t = i / 13;
+        return {
+          x: t * w,
+          y: h / 2 + Math.sin(t * Math.PI) * -h * 0.28 + wobble(seed, i, 1.6),
+        };
+      }),
+    /* 동그라미 — 한 바퀴를 조금 넘겨 겹치게 그린다 */
+    circle: (w, h, seed) =>
+      Array.from({ length: 30 }, (_, i) => {
+        const t = (i / 29) * Math.PI * 2.15 - Math.PI * 0.55;
+        return {
+          x: w / 2 + Math.cos(t) * (w / 2) + wobble(seed, i, 2.2),
+          y: h / 2 + Math.sin(t) * (h / 2) + wobble(seed, i + 40, 2.2),
+        };
+      }),
+    /*
     별 — 다섯 꼭짓점을 «건너뛰며» 한 붓으로 잇는다.
     이웃한 순서(0,1,2,3,4)로 이으면 그냥 오각형이 된다. 두 칸씩 건너야
     별이 된다.
   */
-  star: (w, h, seed) =>
-    Array.from({ length: 6 }, (_, i) => {
-      const t = ((i * 2) % 5) * ((Math.PI * 2) / 5) - Math.PI / 2;
-      return {
-        x: w / 2 + Math.cos(t) * (w / 2) + wobble(seed, i, 1.2),
-        y: h / 2 + Math.sin(t) * (h / 2) + wobble(seed, i + 9, 1.2),
-      };
-    }),
-  /* 체크 */
-  check: (w, h, seed) =>
-    [
-      { x: 0, y: h * 0.55 },
-      { x: w * 0.34, y: h },
-      { x: w, y: 0 },
-    ].map((p, i) => ({ x: p.x + wobble(seed, i, 1.4), y: p.y + wobble(seed, i + 5, 1.4) })),
-};
+    star: (w, h, seed) =>
+      Array.from({ length: 6 }, (_, i) => {
+        const t = ((i * 2) % 5) * ((Math.PI * 2) / 5) - Math.PI / 2;
+        return {
+          x: w / 2 + Math.cos(t) * (w / 2) + wobble(seed, i, 1.2),
+          y: h / 2 + Math.sin(t) * (h / 2) + wobble(seed, i + 9, 1.2),
+        };
+      }),
+    /* 체크 */
+    check: (w, h, seed) =>
+      [
+        { x: 0, y: h * 0.55 },
+        { x: w * 0.34, y: h },
+        { x: w, y: 0 },
+      ].map((p, i) => ({
+        x: p.x + wobble(seed, i, 1.4),
+        y: p.y + wobble(seed, i + 5, 1.4),
+      })),
+  };
 
 export function Ink({
   id,
   at,
-  shape = 'underline',
-  w = '160',
+  shape = "underline",
+  w = "160",
   h,
-  color = 'red',
+  color = "red",
 }: {
   id: string;
   at: string;
@@ -2101,13 +2284,16 @@ export function Ink({
 }) {
   const { registerInk } = useBoard();
   const stroke = useMemo(() => {
-    const [ox, oy] = at.split(',').map((n) => parseFloat(n.trim()));
+    const [ox, oy] = at.split(",").map((n) => parseFloat(n.trim()));
     const width = Number(w);
-    const height = h !== undefined ? Number(h) : shape === 'underline' ? 12 : width * 0.62;
-    const pts = (SHAPES[shape] ?? SHAPES.underline)(width, height, id).map((p) => ({
-      x: Math.round((ox + p.x) * 10) / 10,
-      y: Math.round((oy + p.y) * 10) / 10,
-    }));
+    const height =
+      h !== undefined ? Number(h) : shape === "underline" ? 12 : width * 0.62;
+    const pts = (SHAPES[shape] ?? SHAPES.underline)(width, height, id).map(
+      (p) => ({
+        x: Math.round((ox + p.x) * 10) / 10,
+        y: Math.round((oy + p.y) * 10) / 10,
+      }),
+    );
     return { id, color: MARKER[color] ?? MARKER.red, pts };
   }, [id, at, shape, w, h, color]);
 
@@ -2143,8 +2329,18 @@ function InkStroke({ stroke }: { stroke: Stroke }) {
   const d = toPath(local);
 
   return (
-    <Item id={stroke.id} at={`${x0},${y0}`} z={28} style={{ pointerEvents: 'none' }}>
-      <svg width={w} height={h} style={{ display: 'block', overflow: 'visible' }} aria-hidden>
+    <Item
+      id={stroke.id}
+      at={`${x0},${y0}`}
+      z={28}
+      style={{ pointerEvents: "none" }}
+    >
+      <svg
+        width={w}
+        height={h}
+        style={{ display: "block", overflow: "visible" }}
+        aria-hidden
+      >
         {/* 잡기용 — 보이지 않지만 손이 닿는다 */}
         <path
           d={d}
@@ -2153,7 +2349,7 @@ function InkStroke({ stroke }: { stroke: Stroke }) {
           strokeWidth={14}
           strokeLinecap="round"
           strokeLinejoin="round"
-          style={{ pointerEvents: 'stroke', cursor: 'grab' }}
+          style={{ pointerEvents: "stroke", cursor: "grab" }}
         />
         <path
           d={d}
@@ -2162,7 +2358,7 @@ function InkStroke({ stroke }: { stroke: Stroke }) {
           strokeWidth={3}
           strokeLinecap="round"
           strokeLinejoin="round"
-          style={{ pointerEvents: 'none' }}
+          style={{ pointerEvents: "none" }}
         />
       </svg>
     </Item>
@@ -2223,9 +2419,16 @@ export function Connector({
     : { x: B.cx, y: B.cy - Math.sign(dy) * (B.hh + GAP) };
 
   /* 빠져나오는 방향으로 손잡이를 뻗어 S 를 만든다 — 거리에 비례하되 상한을 둔다 */
-  const reach = Math.min(160, Math.max(48, Math.abs(horiz ? p2.x - p1.x : p2.y - p1.y) * 0.55));
-  const c1 = horiz ? { x: p1.x + Math.sign(dx) * reach, y: p1.y } : { x: p1.x, y: p1.y + Math.sign(dy) * reach };
-  const c2 = horiz ? { x: p2.x - Math.sign(dx) * reach, y: p2.y } : { x: p2.x, y: p2.y - Math.sign(dy) * reach };
+  const reach = Math.min(
+    160,
+    Math.max(48, Math.abs(horiz ? p2.x - p1.x : p2.y - p1.y) * 0.55),
+  );
+  const c1 = horiz
+    ? { x: p1.x + Math.sign(dx) * reach, y: p1.y }
+    : { x: p1.x, y: p1.y + Math.sign(dy) * reach };
+  const c2 = horiz
+    ? { x: p2.x - Math.sign(dx) * reach, y: p2.y }
+    : { x: p2.x, y: p2.y - Math.sign(dy) * reach };
 
   /* 촉은 도착 «직전의 방향» 을 따른다 — S 라서 직선 각도와 다르다 */
   const ang = Math.atan2(p2.y - c2.y, p2.x - c2.x);
@@ -2254,12 +2457,22 @@ export function Connector({
     <>
       <svg
         className="pointer-events-none absolute left-0 top-0 h-full w-full"
-        style={{ zIndex: 4, overflow: 'visible', color: LINE }}
+        style={{ zIndex: 4, overflow: "visible", color: LINE }}
         aria-hidden
       >
-        <path d={d} fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinecap="round" />
+        <path
+          d={d}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={1.9}
+          strokeLinecap="round"
+        />
         {/* 촉은 채운 삼각형 — 두 획으로 치면 손그림이 된다 */}
-        <path d={`M ${p2.x} ${p2.y} L ${tip(-1)} L ${tip(1)} Z`} fill="currentColor" stroke="none" />
+        <path
+          d={`M ${p2.x} ${p2.y} L ${tip(-1)} L ${tip(1)} Z`}
+          fill="currentColor"
+          stroke="none"
+        />
       </svg>
       {label && (
         /* 선 «위» 에 앉는 태그. 바탕이 있어 선이 글자를 뚫고 지나가지 않는다 */
