@@ -12,3 +12,6 @@ export * from './components/layouts';
 
 // Shell — chrome/shell 컴포넌트 (ThemeToggle 등)
 export * from './components/shell';
+
+// nohsJam — 만질 수 있는 판 (스타일: @nohs/ui/src/styles/jam.css)
+export * from './components/jam';

@@ -1,0 +1,106 @@
+/**
+ * nohsJam — 캔버스 화면의 최소 스타일.
+ *
+ * 여기 있는 것은 «판 자체» 에 필요한 것뿐이다. 판 위에 얹는 글의 서체는
+ * 소비처가 정한다 — Board 의 proseClassName 으로 자기 클래스를 넘긴다.
+ */
+
+/*
+  격자는 «판에 그려진 것» 이지 화면에 붙은 것이 아니다. 그래서 무늬 자체를
+  Board 가 현재 이동·확대에 맞춰 인라인으로 넣어 준다 — 간격도 점 크기도
+  판을 따라 커지고, 밀면 같이 흐른다.
+
+  (그래디언트 «안» 의 반지름은 절대 길이라 background-size 를 키워도 안
+  커진다. 간격만 벌어지고 점은 그대로라 확대할수록 휑해 보였다.)
+*/
+.jam-canvas {
+  background-color: rgb(var(--color-onsurface) / 0.02);
+}
+
+/* 조각을 눌러 데려간 대목을 잠깐 밝혀준다 — 어디로 왔는지 알려주는 신호 */
+.jam-panel-on {
+  animation: jam-panel-flash 1.4s ease-out;
+}
+@keyframes jam-panel-flash {
+  0%,
+  22% {
+    background: rgb(44 140 245 / 0.1);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+/*
+  네이티브 부드러운 스크롤을 «끈다». 어떤 환경에서는 scroll-behavior: smooth 와
+  scrollTo({behavior:'smooth'}) 가 조용히 무시된다(대입해도 0 그대로). 굴리는
+  일은 자바스크립트가 직접 한다.
+*/
+.jam-panel {
+  scroll-behavior: auto;
+}
+
+/* 종이 위 글자는 조명이 바뀌어도 먹색이다 — 소비처의 본문 색 규칙을 되돌린다 */
+.jam-paper-body p {
+  margin: 0;
+}
+.jam-paper-body > * + * {
+  margin-top: 0.45em;
+}
+.jam-paper-body strong,
+.jam-paper-body a,
+.jam-paper-body em {
+  color: inherit;
+}
+.jam-paper-body strong {
+  font-weight: 800;
+}
+.jam-paper-body code {
+  background: rgb(0 0 0 / 0.08);
+  color: inherit;
+}
+
+/* 빈 쪽지에 무엇을 하라는지 알려 준다 — 붙여 놓고 멀뚱히 있으면 실패다 */
+.jam-paper-body[contenteditable]:empty::before {
+  content: attr(data-placeholder);
+  opacity: 0.4;
+}
+
+/*
+  지울 수 없는 조각에 삭제를 시도했을 때 — 고개를 젓듯 좌우로 «회전» 한다.
+
+  기울기는 조각마다 다르므로(포스트잇은 살짝 비뚤다) 원래 각도를 --tilt 에
+  담아 두고 거기서 더하고 뺀다. 그래야 흔들림이 끝났을 때 제 각도로 돌아온다.
+  transform 이 아니라 rotate 개별 속성을 쓰는 이유도 같다 — scale 을 덮지 않는다.
+*/
+@keyframes jam-deny {
+  0%,
+  100% {
+    rotate: calc(var(--tilt, 0deg) + var(--spin, 0deg));
+  }
+  15% {
+    rotate: calc(var(--tilt, 0deg) + var(--spin, 0deg) - 4deg);
+  }
+  40% {
+    rotate: calc(var(--tilt, 0deg) + var(--spin, 0deg) + 4deg);
+  }
+  65% {
+    rotate: calc(var(--tilt, 0deg) + var(--spin, 0deg) - 2.5deg);
+  }
+  85% {
+    rotate: calc(var(--tilt, 0deg) + var(--spin, 0deg) + 2.5deg);
+  }
+}
+
+/* 쇼룸 데모 판의 글 — 소비처가 자기 조판을 넘기는 예시다 */
+.jamDemoProse { font-size: 14px; line-height: 1.75; color: rgb(var(--color-onsurface) / 0.85); }
+.jamDemoProse p { margin: 0; }
+.jamDemoProse > * + * { margin-top: 0.8em; }
+.jamDemoProse ul { list-style: disc; padding-left: 1.2em; }
+.jamDemoProse li + li { margin-top: 0.35em; }
+.jamDemoProse code {
+  font-size: 0.88em;
+  padding: 0.12em 0.36em;
+  border-radius: 3px;
+  background: rgb(var(--color-onsurface) / 0.06);
+}

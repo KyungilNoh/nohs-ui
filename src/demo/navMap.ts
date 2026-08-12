@@ -14,6 +14,7 @@ export const SECTIONS: NavSection[] = [
   { path: '/tokens', label: 'Tokens' },
   { path: '/atoms', label: 'Atoms' },
   { path: '/molecules', label: 'Molecules' },
+  { path: '/jam', label: 'nohsJam' },
 ];
 
 /** 개별 데모 경로 → 속한 섹션 */
