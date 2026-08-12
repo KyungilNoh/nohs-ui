@@ -2200,8 +2200,18 @@ function GroupFrame({
   ];
 
   return (
+    /*
+      상자 «자신» 은 포인터를 통과시킨다.
+
+      선택 영역 전체를 덮는 투명한 div 가 조각들 위(z 40)에 있으면, 고른 것을
+      끌려고 눌러도 그 손이 상자에 먼저 닿는다. 상자에는 끌기 핸들러가 없으니
+      이벤트는 캔버스까지 흘러가 올가미가 다시 시작됐다 — 여럿 골라 놓고
+      끌면 «움직이지 않고 선택만 바뀌는» 증상의 정체다.
+
+      잡혀야 하는 것은 모서리 손잡이뿐이므로 그것들만 포인터를 되살린다.
+    */
     <div
-      className="absolute"
+      className="pointer-events-none absolute"
       style={{ left: x0, top: y0, width: x1 - x0, height: y1 - y0, zIndex: 40 }}
     >
       <span
@@ -2213,7 +2223,7 @@ function GroupFrame({
         <span
           key={`spin-${c.k}`}
           onPointerDown={(e) => onRotate(e)}
-          className="absolute"
+          className="pointer-events-auto absolute"
           style={{
             [c.x]: spinOff * inv,
             [c.y]: spinOff * inv,
@@ -2227,7 +2237,7 @@ function GroupFrame({
         <span
           key={c.k}
           onPointerDown={(e) => onResize(c.k, e)}
-          className="absolute border-[#2C8CF5] bg-surface shadow-sm"
+          className="pointer-events-auto absolute border-[#2C8CF5] bg-surface shadow-sm"
           style={{
             [c.x]: off * inv,
             [c.y]: off * inv,
