@@ -543,6 +543,24 @@ export function Board({
     const prev = prevW.current;
     if (w === prev) return;
     prevW.current = w;
+
+    /*
+      아직 판을 만지지 않았으면 «다시 맞춘다».
+
+      비율로만 따라가면 첫 배치가 흔들린다 — 글 패널은 Panel 이 등록된 뒤에야
+      붙는데, 그때 캔버스가 좁아지는 것을 «사용자가 폭을 줄였다» 로 읽어
+      배율을 그만큼 깎았다(2560 → 2120 이 그대로 0.83 이 됐다).
+
+      손을 댄 뒤에는 비율로 따라간다 — 잡아 놓은 배율을 지키면서도 반응해야
+      하기 때문이다.
+    */
+    if (!touchedRef.current) {
+      const fresh = fitNow(el);
+      home.current = fresh;
+      setView(fresh);
+      return;
+    }
+
     const ratio = w / prev;
 
     setView((v) => {
