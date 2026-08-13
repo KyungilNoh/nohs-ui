@@ -1,13 +1,12 @@
 {
   "name": "@nohs/ui",
-  "version": "1.3.6",
+  "version": "2.0.0",
   "main": "dist/src/index.js",
   "module": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "exports": {
     ".": "./dist/src/index.js",
-    "./src/styles/index.css": "./src/styles/index.css",
-    "./src/styles/jam.css": "./src/styles/jam.css"
+    "./src/styles/index.css": "./src/styles/index.css"
   },
   "scripts": {
     "build": "tsc",
