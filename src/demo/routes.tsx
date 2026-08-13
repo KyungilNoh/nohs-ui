@@ -10,7 +10,6 @@ import MoleculesPage from './pages/MoleculesPage';
 import AtomsPage from './pages/AtomsPage';
 import TokensDemo from './pages/TokensDemo';
 import Overview from './pages/Overview';
-import JamDemo from './pages/JamDemo';
 
 // Molecules — 상호작용 / 조합
 import ButtonDemo from './pages/ButtonDemo';
@@ -57,9 +56,6 @@ export const DS_ROUTES: DSRoute[] = [
   { to: '/tokens', label: 'Tokens', element: <TokensDemo />, inNav: true },
   { to: '/atoms', label: 'Atoms', element: <AtomsPage />, inNav: true },
   { to: '/molecules', label: 'Molecules', element: <MoleculesPage />, inNav: true },
-  // nohsJam 은 원자·분자와 층이 다르다. 캔버스 앱 하나라 Molecules 안에 넣으면
-  // Checkbox 옆에 판이 놓이는 꼴이 된다 — 층을 따로 세운다.
-  { to: '/jam', label: 'nohsJam', element: <JamDemo />, inNav: true },
 
   // ── 카드에서 들어가는 개별 데모 ────────────────────────────
 

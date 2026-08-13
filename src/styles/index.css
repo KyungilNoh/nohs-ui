@@ -4,7 +4,6 @@
  */
 
 @import './tokens.css';
-@import './jam.css';
 
 @tailwind base;
 @tailwind components;

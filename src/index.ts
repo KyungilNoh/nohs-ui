@@ -13,5 +13,6 @@ export * from './components/layouts';
 // Shell — chrome/shell 컴포넌트 (ThemeToggle 등)
 export * from './components/shell';
 
-// nohsJam — 만질 수 있는 판 (스타일: @nohs/ui/src/styles/jam.css)
-export * from './components/jam';
+// nohsJam 은 여기 없다. 판은 folio 레포가 소유한다(folio/components/jam/) —
+// 원자·분자와 층이 다른 «캔버스 앱» 이라, 쓰는 곳 하나가 원본을 들고 있는
+// 편이 두 벌을 맞춰 두는 것보다 낫다.
