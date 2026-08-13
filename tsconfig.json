@@ -24,5 +24,8 @@
 
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src", "vite.config.ts"]
+  // 쇼룸(src/demo)은 패키지에 안 실린다. 그쪽은 three 를 쓰는데, dist 에 넣으면
+  // 컴포넌트만 가져다 쓰는 소비처가 3D 타입까지 지게 된다.
+  "include": ["src", "vite.config.ts"],
+  "exclude": ["src/demo"]
 }
