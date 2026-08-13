@@ -66,8 +66,13 @@ export function DemoPageHeader({
         <Title className='font-extrabold text-onsurface'>{title}</Title>
       </div>
 
+      {/*
+        읽기 폭은 «글자 수» 로 잰다. max-w-2xl 은 672px 고정이라 글자 크기와
+        무관하게 잘렸다 — 한 줄이면 될 문장이 121px 모자라 두 줄로 접혔다.
+        78ch 는 읽기 좋은 범위(60~75자)의 위쪽이라 잃는 것 없이 한 줄에 든다.
+      */}
       {description && (
-        <Paragraph size='lg' weight='light' className='max-w-2xl text-onsurface'>
+        <Paragraph size='lg' weight='light' className='max-w-[78ch] text-onsurface'>
           {description}
         </Paragraph>
       )}

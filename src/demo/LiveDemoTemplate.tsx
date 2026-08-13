@@ -4,7 +4,7 @@
 
 import React, { useMemo, useState, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
-import { backSectionFor } from './navMap';
+import { backSectionFor, type NavSection } from './navMap';
 
 import {
   DemoPageHeader,
@@ -49,10 +49,18 @@ export default function LiveDemoTemplate({
   children,
   propertyTableProps,
 }: ComponentDemoProps) {
-  // 개별 데모면 속한 섹션으로 돌아갈 길을 헤더에 붙인다. 페이지마다 손으로
-  // 넘기게 두면 언젠가 빠뜨린다 — 경로에서 도출한다.
-  const { pathname } = useLocation();
-  const back = backSectionFor(pathname);
+  /*
+    돌아갈 길을 헤더에 붙인다. 페이지마다 손으로 넘기게 두면 언젠가 빠뜨리므로
+    경로에서 도출한다.
+
+    다만 Tokens 처럼 «최상위» 인 화면은 속한 목록이 없어 경로만으로는 길이 안
+    나온다. 그런 화면도 관계도(Overview)에서 점을 눌러 들어올 수 있으므로, 그때는
+    이동하면서 실어 보낸 출발지를 쓴다. LNB 로 직접 들어왔으면 아무것도 안 실려
+    오니 화살표도 안 뜬다 — 원래 없던 뎁스를 만들지 않는다.
+  */
+  const { pathname, state } = useLocation();
+  const from = (state as { from?: NavSection } | null)?.from;
+  const back = backSectionFor(pathname) ?? from ?? null;
   // ✅ pageOnly면 탭/상태 자체가 필요 없음
   if (pageOnly) {
     return (

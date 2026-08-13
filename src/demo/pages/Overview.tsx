@@ -28,6 +28,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as THREE from 'three';
 import { ATOMS as ATOM_ENTRIES, MOLECULES as MOLECULE_ENTRIES } from '../catalog';
+import { SECTIONS } from '../navMap';
 
 /* ── 구조 ──────────────────────────────────────────────────── */
 
@@ -171,10 +172,21 @@ export default function OverviewPage() {
       const m = raw.match(/^(\d+)\s+(\d+)\s+(\d+)$/);
       return new THREE.Color(m ? `rgb(${m[1]},${m[2]},${m[3]})` : raw || fb);
     };
+    /*
+      테마 색은 «그 자리에서» 고쳐 쓴다.
+
+      머티리얼과 유니폼이 이 Color 객체를 그대로 물고 있으므로, set 만 해 주면
+      씬 전체가 따라온다. 새 객체를 만들면 참조가 끊겨 갱신이 안 먹는다.
+    */
     const ink = css('--color-onsurface', '#222');
     const dim = css('--color-outline-strong', '#999');
     const dimTag = css('--color-subtle', '#777');
-    const accentTag = css('--color-primary', '#0a7');
+    /** 테마가 바뀌면 다시 읽어야 하는 색들 — 색 객체와 토큰 이름을 짝지어 둔다 */
+    const themed: Array<[THREE.Color, string, string]> = [
+      [ink, '--color-onsurface', '#222'],
+      [dim, '--color-outline-strong', '#999'],
+      [dimTag, '--color-subtle', '#777'],
+    ];
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(40, 1, 1, 4000);
@@ -207,29 +219,44 @@ export default function OverviewPage() {
     const maxAniso = gl.capabilities.getMaxAnisotropy();
 
     /*
-      점은 «원판» 으로 그린다.
+      점은 «셰이더로» 그린다.
 
-      구(SphereGeometry)로 두면 최대 배율에서 실루엣이 각져 보인다 — 48 분할이어도
-      면 하나가 10px 을 넘는다. 없애려면 500 분할쯤 필요한데, 조명이 없는
-      MeshBasicMaterial 은 어차피 납작한 원으로 렌더된다. 구일 이유가 없다.
-      한 장 구워 스물여덟 점이 나눠 쓴다.
+      한때 512px 원판 텍스처를 썼는데, 기본 화면에서는 지름이 47px 이라 열한 배로
+      줄어든다. 그 축소를 밉맵이 받아 내면서 가장자리가 뭉갰다. 텍스처를 키워도
+      메모리만 늘고 축소비는 그대로다 — 애초에 «그림» 으로 풀 문제가 아니다.
+
+      원은 «중심에서의 거리» 로 정의된다. 픽셀마다 그 거리를 재고 fwidth 로 화면상
+      한 픽셀만큼만 부드럽게 끊으면, 배율이 얼마든 딱 한 픽셀짜리 안티에일리어싱이
+      나온다. 텍스처 샘플링도 밉맵도 없으니 더 빠르고 메모리도 안 든다.
     */
-    const discTex = (() => {
-      const n = 512;
-      const cv = document.createElement('canvas');
-      cv.width = n;
-      cv.height = n;
-      const ctx = cv.getContext('2d')!;
-      ctx.fillStyle = '#fff';
-      ctx.beginPath();
-      /* 가장자리 한 픽셀을 비워 둔다 — 텍스처 끝에 닿으면 필터링이 물어뜯는다 */
-      ctx.arc(n / 2, n / 2, n / 2 - 2, 0, Math.PI * 2);
-      ctx.fill();
-      const t = new THREE.CanvasTexture(cv);
-      t.colorSpace = THREE.SRGBColorSpace;
-      t.anisotropy = gl.capabilities.getMaxAnisotropy();
-      return t;
-    })();
+    const discGeo = new THREE.PlaneGeometry(1, 1);
+    const discShader = {
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec2 vUv;
+        uniform vec3 uColor;
+        uniform float uOpacity;
+        void main() {
+          float d = length(vUv - 0.5);
+          /* 화면에서 한 픽셀이 이 도형에서 얼마인지 — 배율이 변해도 테두리가 일정하다 */
+          float w = fwidth(d);
+          float a = 1.0 - smoothstep(0.5 - w, 0.5, d);
+          if (a <= 0.001) discard;
+          gl_FragColor = vec4(uColor, a * uOpacity);
+          /*
+            ShaderMaterial 은 색공간 변환을 자동으로 안 붙인다. 이게 없으면 sRGB
+            값이 선형값으로 취급돼 전부 어두워진다 — 브랜드색이 검게 보였다.
+          */
+          #include <colorspace_fragment>
+        }
+      `,
+    };
 
     /* 굵기는 층마다 다르게 하지 않는다 — 층은 자리와 크기로 이미 갈린다 */
     function bakeLabel(text: string, px: number) {
@@ -268,12 +295,17 @@ export default function OverviewPage() {
 
     /* ── 노드 ─────────────────────────────────────────── */
     const seats = new Map<string, THREE.Vector3>();
-    const nodes: { id: string; mesh: THREE.Sprite; tag: THREE.Sprite; tier: number }[] = [];
+    const nodes: { id: string; mesh: THREE.Mesh; tag: THREE.Sprite; tier: number }[] = [];
 
     const put = (id: string, at: THREE.Vector3, color: THREE.Color, size: number, tier: number) => {
       seats.set(id, at);
-      const mesh = new THREE.Sprite(
-        new THREE.SpriteMaterial({ map: discTex, color, transparent: true })
+      const mesh = new THREE.Mesh(
+        discGeo,
+        new THREE.ShaderMaterial({
+          ...discShader,
+          uniforms: { uColor: { value: color }, uOpacity: { value: 1 } },
+          transparent: true,
+        })
       );
       mesh.scale.set(size * 2, size * 2, 1);
       mesh.position.copy(at);
@@ -291,11 +323,13 @@ export default function OverviewPage() {
       nodes.push({ id, mesh, tag, tier });
     };
 
-    MOLECULES.forEach((m, i) => put(m, seat(0, i, MOLECULES.length), ink.clone(), 7, 0));
-    ATOMS.forEach((a, i) => put(a, seat(1, i, ATOMS.length), dim.clone(), 5, 1));
-    SEMANTIC.forEach((t, i) =>
-      put(t, seat(2, i, SEMANTIC.length), css(`--color-${t}`, '#888'), 6.5, 2)
-    );
+    MOLECULES.forEach((m, i) => put(m, seat(0, i, MOLECULES.length), ink, 7, 0));
+    ATOMS.forEach((a, i) => put(a, seat(1, i, ATOMS.length), dim, 5, 1));
+    SEMANTIC.forEach((t, i) => {
+      const c = css(`--color-${t}`, '#888');
+      themed.push([c, `--color-${t}`, '#888']);
+      put(t, seat(2, i, SEMANTIC.length), c, 6.5, 2);
+    });
     PALETTE.forEach((p, i) => put(p.id, seat(3, i, PALETTE.length), new THREE.Color(p.hue), 10, 3));
 
     /* ── 선 ───────────────────────────────────────────── */
@@ -312,7 +346,8 @@ export default function OverviewPage() {
       const pts = new THREE.QuadraticBezierCurve3(p, mid, q).getPoints(28);
       const line = new THREE.Line(
         new THREE.BufferGeometry().setFromPoints(pts),
-        new THREE.LineBasicMaterial({ color: color.clone(), transparent: true, opacity: 0.25 })
+        /* clone 하지 않는다 — 테마가 바뀔 때 이 색을 그 자리에서 고쳐 쓴다 */
+        new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.25 })
       );
       world.add(line);
       edges.push({ a, b, line });
@@ -320,7 +355,11 @@ export default function OverviewPage() {
 
     for (const [m, atoms] of Object.entries(USES)) for (const a of atoms) tie(m, a, dim);
     for (const [a, toks] of Object.entries(READS))
-      for (const t of toks) tie(a, t, css(`--color-${t}`, '#888'));
+      for (const t of toks) {
+        const c = css(`--color-${t}`, '#888');
+        themed.push([c, `--color-${t}`, '#888']);
+        tie(a, t, c);
+      }
     for (const [semantic, pal] of Object.entries(MAPS))
       tie(semantic, pal, new THREE.Color(PALETTE.find((p) => p.id === pal)!.hue));
 
@@ -397,7 +436,12 @@ export default function OverviewPage() {
       if (drag && moved < 4) {
         const id = pick(e.clientX, e.clientY);
         const to = id ? HREF[id] : undefined;
-        if (to) go.current(to);
+        /*
+          어디서 왔는지를 실어 보낸다. Tokens 는 최상위라 «속한 목록» 이 없어서
+          경로만으로는 돌아갈 길을 못 만든다 — 관계도에서 들어온 경우에만
+          화살표를 띄우려면 이 표시가 필요하다.
+        */
+        if (to) go.current(to, { state: { from: SECTIONS[0] } });
       }
       drag = null;
     };
@@ -415,6 +459,16 @@ export default function OverviewPage() {
       /* 당기고 미는 것은 «보는 거리» 를 바꾸는 일이라, 회전을 멈출 이유가 없다 */
       aim.dist = Math.max(REACH_DIST, Math.min(AWAY_DIST, aim.dist + e.deltaY * 0.7));
     };
+
+    /* 테마가 바뀌면 색을 다시 읽는다 — 안 그러면 다크에서 씬만 라이트로 남는다 */
+    const reread = () => {
+      for (const [c, name, fb] of themed) c.copy(css(name, fb));
+    };
+    const themeWatch = new MutationObserver(reread);
+    themeWatch.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
 
     el.addEventListener('pointerleave', onLeave);
     el.addEventListener('pointerdown', onDown);
@@ -458,8 +512,10 @@ export default function OverviewPage() {
       return s;
     };
 
-    /* 깊이 계산에 재사용할 그릇 — 프레임마다 새로 만들지 않는다 */
+    /* 깊이 계산·빌보드에 재사용할 그릇 — 프레임마다 새로 만들지 않는다 */
     const probe = new THREE.Vector3();
+    const faceCam = new THREE.Quaternion();
+    const worldInv = new THREE.Quaternion();
 
     let raf = 0;
     const tick = () => {
@@ -479,6 +535,10 @@ export default function OverviewPage() {
       camera.position.set(0, 40, dist);
       camera.lookAt(0, 0, 0);
 
+      /* 부모 회전을 되돌린 «정면 보기» 자세. 점 스물여덟이 같은 값을 쓴다 */
+      worldInv.copy(world.quaternion).invert();
+      faceCam.copy(worldInv).multiply(camera.quaternion);
+
       const f = focus.current;
       const lit = f ? reach(f) : null;
 
@@ -490,9 +550,16 @@ export default function OverviewPage() {
         mat.opacity += (want - mat.opacity) * 0.2;
       }
       for (const n of nodes) {
-        const mat = n.mesh.material as THREE.SpriteMaterial;
+        const u = (n.mesh.material as THREE.ShaderMaterial).uniforms.uOpacity;
         const want = !lit || lit.has(n.id) ? 1 : 0.08;
-        mat.opacity += (want - mat.opacity) * 0.2;
+        u.value += (want - u.value) * 0.2;
+
+        /*
+          평면이라 스스로 카메라를 봐야 한다 — 스프라이트가 대신해 주던 일이다.
+          부모(world)가 돌고 있으므로 카메라 방향을 그대로 넣으면 부모 회전이
+          한 번 더 얹혀 원이 타원으로 눌린다. 부모 회전을 먼저 되돌린다.
+        */
+        n.mesh.quaternion.copy(faceCam);
 
         /*
           멀수록 옅게. 앞의 점에 가려지는 것은 깊이 버퍼가 알아서 하고, 여기서는
@@ -505,9 +572,13 @@ export default function OverviewPage() {
           1
         );
         const tagMat = n.tag.material as THREE.SpriteMaterial;
-        tagMat.opacity = mat.opacity * (1 - far * 0.7);
-        /* 글자는 흰색으로 구워 뒀다 — 색은 여기서 입힌다 */
-        tagMat.color.lerp(n.id === f ? accentTag : n.tier === 0 ? ink : dimTag, 0.25);
+        tagMat.opacity = u.value * (1 - far * 0.7);
+        /*
+          글자는 흰색으로 구워 뒀다 — 색은 여기서 입힌다.
+          짚었다고 브랜드색을 입히지 않는다. 짚은 것이 무엇인지는 «그 길만 살고
+          나머지가 죽는» 것으로 이미 말한다 — 거기에 색까지 바꾸면 신호가 겹친다.
+        */
+        tagMat.color.lerp(n.tier === 0 ? ink : dimTag, 0.25);
       }
 
       gl.render(scene, camera);
@@ -518,6 +589,7 @@ export default function OverviewPage() {
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
+      themeWatch.disconnect();
       el.removeEventListener('pointerleave', onLeave);
       el.removeEventListener('pointerdown', onDown);
       el.removeEventListener('pointermove', onMove);
@@ -533,16 +605,22 @@ export default function OverviewPage() {
     <div className='relative h-screen w-full overflow-hidden bg-surface text-onsurface'>
       <div ref={host} className='h-full w-full cursor-grab active:cursor-grabbing' />
 
+      {/*
+        팔레트와 시맨틱은 «토큰» 한 갈래다 — 색값과 그 색에 붙인 이름. 줄을 따로
+        쓰면 서로 남남인 층으로 읽힌다. 한 줄에 붙여 둘이 짝이라는 것을 보인다.
+      */}
+      {/*
+        층 표기와 조작 안내를 한자리에 둔다. 안내가 화면 아래 가운데 혼자 떠 있으면
+        판을 보다가 시선을 옮겨야 읽히는데, 그 자리는 원래 아무것도 없는 자리다.
+      */}
       <div className='pointer-events-none absolute left-10 top-10 font-mono text-[10.5px] leading-[2] tracking-[0.16em] text-subtle'>
-        <div>04 MOLECULES {MOLECULES.length}</div>
-        <div>03 ATOMS {ATOMS.length}</div>
-        <div>02 SEMANTIC {SEMANTIC.length}</div>
-        <div>01 PALETTE {PALETTE.length}</div>
+        <div>03 MOLECULES {MOLECULES.length}</div>
+        <div>02 ATOMS {ATOMS.length}</div>
+        <div>
+          01 PALETTE {PALETTE.length} · SEMANTIC {SEMANTIC.length}
+        </div>
+        <div className='mt-5 opacity-70'>DRAG · WHEEL · HOVER · CLICK</div>
       </div>
-
-      <p className='pointer-events-none absolute bottom-10 left-1/2 -translate-x-1/2 font-mono text-[10px] tracking-[0.22em] text-subtle opacity-70'>
-        DRAG · WHEEL · HOVER
-      </p>
     </div>
   );
 }
