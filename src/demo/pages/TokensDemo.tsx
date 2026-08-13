@@ -91,8 +91,28 @@ function Ramp({
   );
 }
 
-/** 접두어로 갈래를 나눈다. 순서가 곧 화면 순서 */
+/**
+ * 접두어로 갈래를 나눈다. 순서가 곧 화면 순서.
+ *
+ * tokens.css 의 절 이름을 그대로 따른다 — Palette(Brand·Status·Neutral) ·
+ * Typography · Semantic. 파일이 이미 그렇게 갈라 놓았는데 화면만 다르게 묶고
+ * 있었다.
+ *
+ * Palette 는 «색값» 이고 Semantic 은 그 색에 «어디에 쓰는 색인지» 이름을 붙인
+ * 것이다 — --neutral-10 은 그냥 어두운 회색이고, --color-onsurface 는 «바탕 위
+ * 글자색» 이다. 다크 테마가 갈리는 지점도 정확히 그 사이다(팔레트는 그대로,
+ * 이름만 다시 건다).
+ */
+const RAMPED = /^--(brand|neutral)-\d+$/;
+/* tokens.css 의 «Palette: Status» — 상태를 나타내는 원시색 */
+const STATUS_HUE = /^--(red|green|blue|yellow|orange)-\d+$/;
+
 const GROUPS: Array<{ key: string; label: string; match: (n: string) => boolean }> = [
+  {
+    key: 'status',
+    label: 'Palette / Status',
+    match: (n) => STATUS_HUE.test(n),
+  },
   {
     key: 'semantic',
     label: 'Semantic',
@@ -110,15 +130,28 @@ const GROUPS: Array<{ key: string; label: string; match: (n: string) => boolean 
   },
 ];
 
+/**
+ * 이 값이 색인가. 색이면 그릴 수 있는 형태로 돌려준다.
+ *
+ * 맨 숫자 세 개만 보면 안 된다 — 팔레트·시맨틱은 `12 34 56` 꼴이지만
+ * --focus-ring-color 는 계산값이 `rgb(21 89 67)` 이라 그 판별을 통과하지 못한다.
+ * 그래서 색인데도 abc 로 떨어져 있었다. 브라우저에게 직접 물어본다.
+ */
+function asColor(value: string): string | null {
+  if (!value) return null;
+  if (RGB_TRIPLET.test(value)) return `rgb(${value})`;
+  return CSS?.supports?.('color', value) ? value : null;
+}
+
 function Swatch({ token }: { token: Token }) {
-  const isColor = RGB_TRIPLET.test(token.value);
+  const color = asColor(token.value);
   return (
     <div className='flex items-center gap-3 rounded-md border border-outline/25 px-3 py-2'>
-      {isColor ? (
+      {color ? (
         <span
           aria-hidden
           className='h-8 w-8 shrink-0 rounded border border-outline/30'
-          style={{ background: `rgb(${token.value})` }}
+          style={{ background: color }}
         />
       ) : (
         <span
@@ -163,14 +196,16 @@ export default function TokensDemoPage() {
   );
 
   const grouped = useMemo(() => {
-    const rest = new Set(tokens.map((t) => t.name));
+    /* 계조 바가 이미 보여준 단계들만 뺀다 — 같은 것을 두 번 읽히지 않는다 */
+    const listed = tokens.filter((t) => !RAMPED.test(t.name));
+    const rest = new Set(listed.map((t) => t.name));
     const out = GROUPS.map((g) => {
-      const items = tokens.filter((t) => g.match(t.name));
+      const items = listed.filter((t) => g.match(t.name));
       items.forEach((t) => rest.delete(t.name));
       return { ...g, items };
     }).filter((g) => g.items.length > 0);
 
-    const leftovers = tokens.filter((t) => rest.has(t.name));
+    const leftovers = listed.filter((t) => rest.has(t.name));
     if (leftovers.length) {
       out.push({
         key: 'etc',
@@ -205,12 +240,16 @@ export default function TokensDemoPage() {
       {tokens.length > 0 && (
         <>
           <Ramp
-            label='BRAND'
+            label='Palette / Brand'
             vars={BRAND_STEPS.map((n) => `--brand-${n}`)}
             values={valueOf}
             showLabels
           />
-          <Ramp label='NEUTRAL' vars={NEUTRAL_STEPS.map((n) => `--neutral-${n}`)} values={valueOf} />
+          <Ramp
+            label='Palette / Neutral'
+            vars={NEUTRAL_STEPS.map((n) => `--neutral-${n}`)}
+            values={valueOf}
+          />
         </>
       )}
 
