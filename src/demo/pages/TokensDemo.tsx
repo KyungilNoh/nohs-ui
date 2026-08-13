@@ -5,6 +5,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import LiveDemoTemplate from '../LiveDemoTemplate';
 import { Eyebrow, Paragraph } from '@ds';
+import { collectTokenNames } from '../tokens';
 
 /**
  * 디자인 토큰 목록.
@@ -22,26 +23,6 @@ interface Token {
 
 /** 색 토큰은 "R G B" 삼중값으로 저장된다 — rgb(var(--x) / alpha) 로 쓰기 위해서다 */
 const RGB_TRIPLET = /^\d{1,3}\s+\d{1,3}\s+\d{1,3}$/;
-
-function collectTokenNames(): string[] {
-  const names = new Set<string>();
-  for (const sheet of Array.from(document.styleSheets)) {
-    let rules: CSSRuleList;
-    try {
-      rules = sheet.cssRules; // 교차 출처 스타일시트는 접근 시 던진다
-    } catch {
-      continue;
-    }
-    for (const rule of Array.from(rules)) {
-      if (!(rule instanceof CSSStyleRule)) continue;
-      if (!/:root|\[data-theme/.test(rule.selectorText)) continue;
-      for (const prop of Array.from(rule.style)) {
-        if (prop.startsWith('--')) names.add(prop);
-      }
-    }
-  }
-  return [...names].sort();
-}
 
 const BRAND_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
 /** neutral 은 2씩 51단 — 전부 칠하면 한 줄이 그대로 그라디언트가 된다 */

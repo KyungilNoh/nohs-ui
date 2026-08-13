@@ -29,6 +29,7 @@ import { useNavigate } from 'react-router-dom';
 import * as THREE from 'three';
 import { ATOMS as ATOM_ENTRIES, MOLECULES as MOLECULE_ENTRIES } from '../catalog';
 import { SECTIONS } from '../navMap';
+import { collectTokenNames } from '../tokens';
 
 /* ── 구조 ──────────────────────────────────────────────────── */
 
@@ -68,18 +69,30 @@ const READS: Record<string, string[]> = {
   Icon: [],
   Tag: [],
   /* 분자 */
-  Button: ['primary', 'onprimary', 'onsurface', 'surface', 'surface-alt', 'outline', 'error'],
-  Card: ['onprimary', 'onsurface', 'surface'],
+  Button: ['primary', 'onsurface', 'outline', 'error'],
+  Card: ['onsurface'],
   Checkbox: ['primary', 'error'],
-  Input: ['onsurface', 'surface', 'outline', 'muted', 'success', 'error'],
+  Input: ['onsurface', 'outline', 'muted', 'success', 'error'],
   SectionHeader: ['onsurface'],
-  Select: ['onsurface', 'surface', 'outline', 'error'],
-  Switch: ['primary', 'surface', 'surface-strong', 'outline', 'error'],
-  Textarea: ['onsurface', 'surface', 'outline', 'muted', 'error'],
+  Select: ['onsurface', 'outline', 'error'],
+  Switch: ['primary', 'outline', 'error'],
+  Textarea: ['onsurface', 'outline', 'muted', 'error'],
 };
 
 /**
  * 시맨틱 → 그것이 가리키는 팔레트.
+ *
+ * «면» 은 넣지 않는다 — surface · surface-alt · surface-strong · onprimary.
+ *
+ * 처음엔 surface 만 뺐다. 라이트 테마에서 순백이라 안 보였기 때문인데, 그러고는
+ * «바탕이니까» 라는 설명을 뒤에 갖다 붙였다. 컴포넌트 입장에서 보면 Input 이 제
+ * 입력칸을 그 색으로 칠하므로 엄연히 칠하는 색이고, 같은 갈래인 alt·strong 만
+ * 남는 것도 앞뒤가 안 맞았다.
+ *
+ * 그래서 갈래째 뺀다. 이 관계도가 보여주려는 것은 «무엇이 무엇을 나눠 쓰는가»
+ * 인데, 면 색은 거의 모든 컴포넌트가 하나씩 물고 있어서 선만 늘 뿐 갈래를
+ * 드러내지 못한다. onsurface(글자색)는 남긴다 — 그쪽은 «면» 이 아니라 그 위에
+ * 얹히는 것이고, 실제로 이 시스템에서 가장 많이 공유되는 토큰이다.
  *
  * tokens.css 의 Semantic 절을 그대로 옮겼다. 이 한 겹이 이 시스템에서 제일
  * 중요한 결정이다 — 다크 테마는 팔레트를 바꾸지 않고 «이 화살표만» 갈아 끼운다.
@@ -87,11 +100,7 @@ const READS: Record<string, string[]> = {
  */
 const MAPS: Record<string, string> = {
   primary: 'brand',
-  onprimary: 'neutral',
   onsurface: 'neutral',
-  surface: 'neutral',
-  'surface-alt': 'neutral',
-  'surface-strong': 'neutral',
   outline: 'neutral',
   muted: 'neutral',
   helper: 'neutral',
@@ -154,6 +163,13 @@ function seat(tier: number, i: number, total: number) {
 
 export default function OverviewPage() {
   const host = React.useRef<HTMLDivElement>(null);
+  /*
+    토큰은 «시스템이 가진 수» 를 말한다. 관계도가 그리는 것은 그중 컴포넌트가
+    실제로 쓰는 것들뿐이지만, 층의 이름표는 그 층이 무엇인지를 말하는 자리다.
+    숫자를 손으로 적으면 tokens.css 와 어긋나므로 스타일시트에서 센다.
+  */
+  const [tokenCount, setTokenCount] = React.useState(0);
+  React.useEffect(() => setTokenCount(collectTokenNames().length), []);
   const [name, setName] = React.useState<string | null>(null);
   const focus = React.useRef<string | null>(null);
   focus.current = name;
@@ -616,10 +632,8 @@ export default function OverviewPage() {
       <div className='pointer-events-none absolute left-10 top-10 font-mono text-[10.5px] leading-[2] tracking-[0.16em] text-subtle'>
         <div>03 MOLECULES {MOLECULES.length}</div>
         <div>02 ATOMS {ATOMS.length}</div>
-        <div>
-          01 PALETTE {PALETTE.length} · SEMANTIC {SEMANTIC.length}
-        </div>
-        <div className='mt-5 opacity-70'>DRAG · WHEEL · HOVER · CLICK</div>
+        <div>01 TOKENS {tokenCount}</div>
+        <div className='mt-2.5 lowercase opacity-70'>drag · wheel · hover · click</div>
       </div>
     </div>
   );
