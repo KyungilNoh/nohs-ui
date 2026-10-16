@@ -26,3 +26,6 @@ yarn-debug.log*
 !.vscode/extensions.json
 
 *.tsbuildinfo
+
+# Vercel 링크 정보
+.vercel
